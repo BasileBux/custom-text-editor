@@ -43,15 +43,16 @@ var compact WindowStyle = WindowStyle{
 	PaddingLeft:   13.0,
 	Font:          rl.Font{},
 	FontSize:      30,
-	CursorOffset:  0,
+	CursorOffset:  -2,
 	CursorWidth:   1,
 	cursorRatio:   1,
 	ColorTheme:    darkTheme,
 }
 
 type NavigationData struct {
-	SelectedLine int // 0 indexed
-	SelectedRow  int // 0 indexed, number of characters
+	SelectedLine        int // 0 indexed
+	AbsoluteSelectedRow int // 0 indexed, number of characters depends on nothing
+	SelectedRow         int // 0 indexed, number of characters depends on current line
 }
 
 func inputManager(text *[]string, nav *NavigationData) {
@@ -59,8 +60,18 @@ func inputManager(text *[]string, nav *NavigationData) {
 	for char > 0 {
 		// refuse non ascii and non printable chars
 		if char >= 32 && char <= 126 {
-			(*text)[nav.SelectedLine] += string(rune(char))
-			nav.SelectedRow++
+			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
+				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+			}
+			if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
+				(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:nav.AbsoluteSelectedRow] + string(rune(char)) + (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow:]
+				nav.AbsoluteSelectedRow++
+				nav.SelectedRow = nav.AbsoluteSelectedRow
+			} else {
+				(*text)[nav.SelectedLine] += string(rune(char))
+				nav.AbsoluteSelectedRow++
+				nav.SelectedRow = nav.AbsoluteSelectedRow
+			}
 		}
 		char = rl.GetCharPressed()
 	}
@@ -68,12 +79,35 @@ func inputManager(text *[]string, nav *NavigationData) {
 	if rl.IsKeyPressedRepeat(rl.KeyBackspace) || rl.IsKeyPressed(rl.KeyBackspace) {
 		if len((*text)[nav.SelectedLine]) <= 0 && nav.SelectedLine > 0 {
 			nav.SelectedLine--
-			nav.SelectedRow = len((*text)[nav.SelectedLine])
+			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+			nav.SelectedRow = nav.AbsoluteSelectedRow
 			return
 		}
-		if len((*text)[nav.SelectedLine]) >= 1 {
-			(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:len((*text)[nav.SelectedLine])-1]
-			nav.SelectedRow--
+
+		if len((*text)[nav.SelectedLine]) >= 1 && nav.AbsoluteSelectedRow > 0 {
+			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
+				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+			}
+			if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
+				(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:nav.AbsoluteSelectedRow-1] + (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow:]
+				nav.AbsoluteSelectedRow--
+				nav.SelectedRow = nav.AbsoluteSelectedRow
+			} else {
+				(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:len((*text)[nav.SelectedLine])-1]
+				nav.AbsoluteSelectedRow--
+				nav.SelectedRow = nav.AbsoluteSelectedRow
+			}
+
+		} else if nav.SelectedLine > 0 {
+			remaining := (*text)[nav.SelectedLine]
+			newText := make([]string, len(*text)-1)
+			copy(newText, (*text)[:nav.SelectedLine-1])
+			copy(newText[nav.SelectedLine-1:], (*text)[nav.SelectedLine-1:])
+			*text = newText
+			nav.SelectedLine--
+			(*text)[nav.SelectedLine] += remaining
+			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine]) - len(remaining)
+			nav.SelectedRow = nav.AbsoluteSelectedRow
 		}
 	}
 
@@ -81,11 +115,49 @@ func inputManager(text *[]string, nav *NavigationData) {
 		nav.SelectedLine++
 		if len((*text)) <= nav.SelectedLine {
 			*text = append(*text, "")
-			nav.SelectedRow = 0
+			nav.AbsoluteSelectedRow = 0
+			nav.SelectedRow = nav.AbsoluteSelectedRow
 		} else {
-			nav.SelectedRow = len((*text)[nav.SelectedLine])
+			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+			nav.SelectedRow = nav.AbsoluteSelectedRow
+
 		}
 	}
+
+	if (rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft)) && nav.AbsoluteSelectedRow >= 1 {
+		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
+			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+		}
+		nav.AbsoluteSelectedRow--
+		nav.SelectedRow = nav.AbsoluteSelectedRow
+	}
+
+	if (rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight)) && nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
+		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
+			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+		}
+		nav.AbsoluteSelectedRow++
+		nav.SelectedRow = nav.AbsoluteSelectedRow
+	}
+
+	if (rl.IsKeyPressed(rl.KeyUp) || rl.IsKeyPressedRepeat(rl.KeyUp)) && nav.SelectedLine >= 1 {
+		nav.SelectedLine--
+		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine])-1 {
+			nav.SelectedRow = len((*text)[nav.SelectedLine])
+		} else {
+			nav.SelectedRow = nav.AbsoluteSelectedRow
+		}
+	}
+
+	if (rl.IsKeyPressed(rl.KeyDown) || rl.IsKeyPressedRepeat(rl.KeyDown)) && nav.SelectedLine < len(*text)-1 {
+		nav.SelectedLine++
+		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine])-1 {
+			nav.SelectedRow = len((*text)[nav.SelectedLine])
+		} else {
+			nav.SelectedRow = nav.AbsoluteSelectedRow
+		}
+	}
+
 }
 
 func main() {
