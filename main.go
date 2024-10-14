@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -31,8 +30,9 @@ type WindowStyle struct {
 	PaddingLeft   float32
 	Font          rl.Font
 	FontSize      float32
-	CursorOffset  int // horizontal distance to text
-	CursorWidth   int
+	CursorOffset  int32 // horizontal distance to text
+	CursorWidth   int32
+	cursorRatio   float32 // ratio with the text height
 	ColorTheme    Theme
 }
 
@@ -43,47 +43,49 @@ var compact WindowStyle = WindowStyle{
 	PaddingLeft:   13.0,
 	Font:          rl.Font{},
 	FontSize:      30,
-	CursorOffset:  3,
-	CursorWidth:   8,
+	CursorOffset:  0,
+	CursorWidth:   1,
+	cursorRatio:   1,
 	ColorTheme:    darkTheme,
 }
 
 type NavigationData struct {
 	SelectedLine int // 0 indexed
+	SelectedRow  int // 0 indexed, number of characters
 }
 
-func inputManager(text *string, nav *NavigationData) {
+func inputManager(text *[]string, nav *NavigationData) {
 	char := rl.GetCharPressed()
 	for char > 0 {
 		// refuse non ascii and non printable chars
 		if char >= 32 && char <= 126 {
-			*text += string(rune(char))
+			(*text)[nav.SelectedLine] += string(rune(char))
+			nav.SelectedRow++
 		}
 		char = rl.GetCharPressed()
 	}
 
-	if (rl.IsKeyPressedRepeat(rl.KeyBackspace) || rl.IsKeyPressed(rl.KeyBackspace)) && len(*text) > 0 {
-		if (*text)[len(*text)-1] == '\n' {
+	if rl.IsKeyPressedRepeat(rl.KeyBackspace) || rl.IsKeyPressed(rl.KeyBackspace) {
+		if len((*text)[nav.SelectedLine]) <= 0 && nav.SelectedLine > 0 {
 			nav.SelectedLine--
+			nav.SelectedRow = len((*text)[nav.SelectedLine])
+			return
 		}
-		*text = (*text)[:len(*text)-1]
+		if len((*text)[nav.SelectedLine]) >= 1 {
+			(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:len((*text)[nav.SelectedLine])-1]
+			nav.SelectedRow--
+		}
 	}
 
 	if rl.IsKeyPressedRepeat(rl.KeyEnter) || rl.IsKeyPressed(rl.KeyEnter) {
-		*text += "\n"
 		nav.SelectedLine++
+		if len((*text)) <= nav.SelectedLine {
+			*text = append(*text, "")
+			nav.SelectedRow = 0
+		} else {
+			nav.SelectedRow = len((*text)[nav.SelectedLine])
+		}
 	}
-}
-
-func getTextSize(text *string, nav *NavigationData, style *WindowStyle) (rl.Vector2, error) {
-	lines := strings.Split(*text, "\n")
-	if nav.SelectedLine > len(*text)-1 {
-		fmt.Println("Error, navigation index is too big!")
-		return rl.Vector2{}, fmt.Errorf("Navigation index to big\n")
-	}
-	currentLine := strings.Split(lines[nav.SelectedLine], "\n")
-	textSize := rl.MeasureTextEx(style.Font, currentLine[0], style.FontSize, 1)
-	return textSize, nil
 }
 
 func main() {
@@ -97,18 +99,21 @@ func main() {
 		fmt.Fprintf(logFile, "%s\n", text)
 	})
 
-	rl.InitWindow(1000, 800, "My custom text editor")
+	rl.InitWindow(800, 800, "My custom text editor")
 	if !rl.IsWindowReady() {
 		log.Panic("Window didn't open correctly ???")
 	}
 	defer rl.CloseWindow()
 
 	userStyle := compact
-	userStyle.Font = rl.LoadFontEx("/usr/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
+	// userStyle.Font = rl.LoadFontEx("/usr/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
+	userStyle.Font = rl.LoadFontEx("/home/basileb/.local/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
+	rl.SetTextLineSpacing(1)
 	rl.SetTextureFilter(userStyle.Font.Texture, rl.FilterBilinear)
 	rl.SetTargetFPS(144)
 
-	var userText string
+	var userText []string
+	userText = append(userText, "")
 	nav := NavigationData{
 		SelectedLine: 0,
 	}
@@ -122,17 +127,27 @@ func main() {
 		rl.ClearBackground(userStyle.ColorTheme.Background)
 
 		textPos := rl.NewVector2(userStyle.PaddingLeft, userStyle.PaddingTop)
-		rl.DrawTextEx(userStyle.Font, userText, textPos, userStyle.FontSize, 1, userStyle.ColorTheme.Text)
+		var textToRender string
+
+		for _, l := range userText {
+			textToRender += l
+			textToRender += "\n"
+		}
+		rl.DrawTextEx(userStyle.Font, textToRender, textPos, userStyle.FontSize, 1, userStyle.ColorTheme.Text)
 
 		// Draw cursor rectangle
-		// TODO: This gives error of nav index being wrong. Check this out
-		textSize, err := getTextSize(&userText, &nav, &userStyle)
-		if err != nil {
-			fmt.Println("Resetting nav index")
-			nav.SelectedLine = 0
+		textSize := rl.MeasureTextEx(userStyle.Font, userText[nav.SelectedLine], userStyle.FontSize, 1)
+		charSize := textSize.X / float32(len(userText[nav.SelectedLine]))
+
+		var cursorHorizontalPos int32
+		if len(userText[nav.SelectedLine]) <= 0 {
+			cursorHorizontalPos = int32(userStyle.PaddingLeft)
+		} else {
+			cursorHorizontalPos = int32(charSize*float32(nav.SelectedRow)+charSize) + userStyle.CursorOffset
 		}
-		// TODO: Show cursor when there is no text
-		rl.DrawRectangle(int32(userStyle.PaddingLeft)+int32(textSize.X)+int32(userStyle.CursorOffset), int32(userStyle.PaddingTop)+int32(nav.SelectedLine)*int32(textSize.Y)+int32(nav.SelectedLine+1), int32(userStyle.CursorWidth), int32(textSize.Y), rl.RayWhite)
+
+		// Previous x: int32(userStyle.PaddingLeft)+int32(textSize.X)+int32(userStyle.CursorOffset)
+		rl.DrawRectangle(cursorHorizontalPos, int32(userStyle.PaddingTop)+int32(nav.SelectedLine)*int32(textSize.Y)+int32(nav.SelectedLine+1), int32(userStyle.CursorWidth), int32(textSize.Y*userStyle.cursorRatio), rl.RayWhite)
 
 		rl.EndDrawing()
 	}
