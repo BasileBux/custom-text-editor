@@ -1,6 +1,8 @@
 package input
 
 import (
+	"strings"
+
 	t "github.com/basileb/custom_text_editor/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -43,19 +45,49 @@ func InputManager(text *[]string, nav *t.NavigationData) {
 		}
 	}
 
-	if (rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft)) && nav.AbsoluteSelectedRow >= 1 {
-		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
+	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
+		if nav.AbsoluteSelectedRow >= 1 {
+			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
+				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+			}
+			if rl.IsKeyDown(rl.KeyLeftControl) {
+				jumpTo := strings.LastIndex((*text)[nav.SelectedLine][:nav.AbsoluteSelectedRow-1], " ")
+				if jumpTo == -1 {
+					nav.AbsoluteSelectedRow = 0
+				} else {
+					nav.AbsoluteSelectedRow = jumpTo + 1
+				}
+			} else {
+				nav.AbsoluteSelectedRow--
+			}
+		} else if nav.SelectedLine >= 1 {
+			// when on left line end, go up end
+			nav.SelectedLine--
 			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 		}
-		nav.AbsoluteSelectedRow--
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 	}
 
-	if (rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight)) && nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
-		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
-			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+	if rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight) {
+		if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
+			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
+				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+			}
+			if rl.IsKeyDown(rl.KeyLeftControl) {
+				jumpTo := strings.Index((*text)[nav.SelectedLine][nav.AbsoluteSelectedRow+1:], " ")
+				if jumpTo == -1 {
+					nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
+				} else {
+					nav.AbsoluteSelectedRow = jumpTo + nav.AbsoluteSelectedRow + 2
+				}
+			} else {
+				nav.AbsoluteSelectedRow++
+			}
+		} else if nav.SelectedLine < len((*text))-1 {
+			// when on right line end, go down and 0
+			nav.SelectedLine++
+			nav.AbsoluteSelectedRow = 0
 		}
-		nav.AbsoluteSelectedRow++
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 	}
 
