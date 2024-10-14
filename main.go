@@ -33,7 +33,7 @@ func DrawCursor(userText []string, nav *t.NavigationData, userStyle *t.WindowSty
 		cursorHorizontalPos = int32(charSize*float32(nav.SelectedRow)+charSize) + userStyle.CursorOffset
 	}
 
-	rl.DrawRectangle(cursorHorizontalPos, int32(userStyle.PaddingTop)+int32(nav.SelectedLine)*int32(textSize.Y)+int32(nav.SelectedLine+1), int32(userStyle.CursorWidth), int32(textSize.Y*userStyle.CursorRatio), rl.RayWhite)
+	rl.DrawRectangle(cursorHorizontalPos, int32(userStyle.PaddingTop)+int32(nav.SelectedLine)*int32(textSize.Y)+int32(nav.SelectedLine+1), int32(userStyle.CursorWidth), int32(textSize.Y*userStyle.CursorRatio), userStyle.ColorTheme.Text)
 }
 
 func main() {

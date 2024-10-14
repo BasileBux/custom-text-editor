@@ -42,7 +42,7 @@ var Compact WindowStyle = WindowStyle{
 	CursorOffset:  -2,
 	CursorWidth:   1,
 	CursorRatio:   1,
-	ColorTheme:    darkTheme,
+	ColorTheme:    lightTheme,
 }
 
 type NavigationData struct {
