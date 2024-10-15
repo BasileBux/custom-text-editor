@@ -33,16 +33,20 @@ func InputManager(text *[]string, nav *t.NavigationData) {
 	}
 
 	if rl.IsKeyPressedRepeat(rl.KeyEnter) || rl.IsKeyPressed(rl.KeyEnter) {
-		nav.SelectedLine++
-		if len((*text)) <= nav.SelectedLine {
-			*text = append(*text, "")
-			nav.AbsoluteSelectedRow = 0
-			nav.SelectedRow = nav.AbsoluteSelectedRow
-		} else {
-			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-			nav.SelectedRow = nav.AbsoluteSelectedRow
+		newText := make([]string, len(*text)+1)
+		copy(newText, (*text)[:nav.SelectedLine+1])
+		copy(newText[nav.SelectedLine+2:], (*text)[nav.SelectedLine+1:])
+		*text = newText
 
+		remainingString := (*text)[nav.SelectedLine][nav.SelectedRow:]
+		if len(remainingString) != 0 {
+			(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:nav.SelectedRow]
+			(*text)[nav.SelectedLine+1] += remainingString
 		}
+
+		nav.SelectedLine++
+		nav.AbsoluteSelectedRow = 0
+		nav.SelectedRow = nav.AbsoluteSelectedRow
 	}
 
 	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
