@@ -1,0 +1,34 @@
+syntax:
+  tag: '#73dacaFF'
+  func: '#7aa2f7FF'
+  entity: '#7dcfffFF'
+  string: '#9aa5ceFF'
+  regexp: '#9ece6aFF'
+  markup: '#e0af68FF'
+  keyword: '#bb9af7FF'
+  special: '#c0caf5FF'
+  comment: '#7982a9C0'
+  constant: '#a9b1d6FF'
+  operator: '#e0af68FF'
+
+editor:
+  fg: '#7982a9FF'
+  bg: '#24283bFF'
+  line: '#545c7eFF'
+  selection: '#6f7bb640FF'
+  findMatch: '#3d59a166FF'
+  gutter: '#545c7eFF'
+  indentGuide: '#545c7eFF'
+
+ui:
+  fg: '#7982a9FF'
+  bg: '#1f2335FF'
+  line: '#545c7eFF'
+  selection: '#a9b1d6FF'
+  panel:
+    bg: '#1f2335FF'
+    shadow: '#545c7eFF'
+
+common:
+  accent: '#3d59a1FF'
+  error: '#db4b4bFF'

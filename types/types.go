@@ -4,17 +4,17 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type Theme struct {
+type ThemeOld struct {
 	Background rl.Color
 	Text       rl.Color
 }
 
-var darkTheme Theme = Theme{
+var darkTheme ThemeOld = ThemeOld{
 	Background: rl.Black,
 	Text:       rl.RayWhite,
 }
 
-var lightTheme Theme = Theme{
+var lightTheme ThemeOld = ThemeOld{
 	Background: rl.RayWhite,
 	Text:       rl.Black,
 }
@@ -29,7 +29,7 @@ type WindowStyle struct {
 	CursorOffset  int32 // horizontal distance to text
 	CursorWidth   int32
 	CursorRatio   float32 // ratio with the text height
-	ColorTheme    Theme
+	ColorTheme    ThemeOld
 }
 
 var Compact WindowStyle = WindowStyle{
