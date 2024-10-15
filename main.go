@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
-	input "github.com/basileb/custom_text_editor/input"
+	// ts "github.com/basileb/custom_text_editor/treesitter"
+	ts "github.com/basileb/custom_text_editor/treesitter"
 	t "github.com/basileb/custom_text_editor/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -36,47 +36,52 @@ func DrawCursor(userText []string, nav *t.NavigationData, userStyle *t.WindowSty
 	rl.DrawRectangle(cursorHorizontalPos, int32(userStyle.PaddingTop)+int32(nav.SelectedLine)*int32(textSize.Y)+int32(nav.SelectedLine+1), int32(userStyle.CursorWidth), int32(textSize.Y*userStyle.CursorRatio), userStyle.ColorTheme.Text)
 }
 
+// func main() {
+// 	RedirectLogs()
+
+// 	rl.InitWindow(800, 800, "My custom text editor")
+// 	if !rl.IsWindowReady() {
+// 		log.Panic("Window didn't open correctly ???")
+// 	}
+// 	defer rl.CloseWindow()
+
+// 	userStyle := t.Compact
+// 	// userStyle.Font = rl.LoadFontEx("/usr/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
+// 	userStyle.Font = rl.LoadFontEx("/home/basileb/.local/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
+// 	rl.SetTextLineSpacing(1)
+// 	rl.SetTextureFilter(userStyle.Font.Texture, rl.FilterBilinear)
+// 	rl.SetTargetFPS(144)
+
+// 	var userText []string
+// 	userText = append(userText, "")
+// 	nav := t.NavigationData{
+// 		SelectedLine: 0,
+// 		SelectedRow:  0,
+// 	}
+// 	textPos := rl.NewVector2(userStyle.PaddingLeft, userStyle.PaddingTop)
+
+// 	for !rl.WindowShouldClose() {
+
+// 		input.InputManager(&userText, &nav)
+
+// 		rl.BeginDrawing()
+// 		rl.ClearBackground(userStyle.ColorTheme.Background)
+
+// 		var textToRender string
+// 		for _, l := range userText {
+// 			textToRender += l
+// 			textToRender += "\n"
+// 		}
+// 		rl.DrawTextEx(userStyle.Font, textToRender, textPos, userStyle.FontSize, 1, userStyle.ColorTheme.Text)
+
+// 		DrawCursor(userText, &nav, &userStyle)
+
+// 		rl.EndDrawing()
+// 	}
+// 	rl.UnloadFont(userStyle.Font)
+// }
+
 func main() {
-	RedirectLogs()
-
-	rl.InitWindow(800, 800, "My custom text editor")
-	if !rl.IsWindowReady() {
-		log.Panic("Window didn't open correctly ???")
-	}
-	defer rl.CloseWindow()
-
-	userStyle := t.Compact
-	// userStyle.Font = rl.LoadFontEx("/usr/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
-	userStyle.Font = rl.LoadFontEx("/home/basileb/.local/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
-	rl.SetTextLineSpacing(1)
-	rl.SetTextureFilter(userStyle.Font.Texture, rl.FilterBilinear)
-	rl.SetTargetFPS(144)
-
-	var userText []string
-	userText = append(userText, "")
-	nav := t.NavigationData{
-		SelectedLine: 0,
-		SelectedRow:  0,
-	}
-	textPos := rl.NewVector2(userStyle.PaddingLeft, userStyle.PaddingTop)
-
-	for !rl.WindowShouldClose() {
-
-		input.InputManager(&userText, &nav)
-
-		rl.BeginDrawing()
-		rl.ClearBackground(userStyle.ColorTheme.Background)
-
-		var textToRender string
-		for _, l := range userText {
-			textToRender += l
-			textToRender += "\n"
-		}
-		rl.DrawTextEx(userStyle.Font, textToRender, textPos, userStyle.FontSize, 1, userStyle.ColorTheme.Text)
-
-		DrawCursor(userText, &nav, &userStyle)
-
-		rl.EndDrawing()
-	}
-	rl.UnloadFont(userStyle.Font)
+	myCode := "int main(int a, int b) {return a + b;}"
+	ts.ParseText(ts.C, &myCode)
 }
