@@ -56,8 +56,7 @@ func traverseAST(node *tree_sitter.Node, code []byte) {
 	cursor := node.Walk()
 	defer cursor.Close()
 
-	for i := uint32(0); !(cursor.Node().KindId() == 161 && i > 1); i++ {
-		fmt.Println(i)
+	for i := uint32(0); !(cursor.Node().KindId() == 94 && i > 1); i++ {
 		cursor.GotoDescendant(i)
 		start, finish := cursor.Node().ByteRange()
 		text := code[start:finish]

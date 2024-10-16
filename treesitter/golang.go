@@ -23,21 +23,30 @@ func syntaxHighlightingGo(node *tree_sitter.Node, code []byte) {
 		text := code[start:finish]
 
 		switch cursor.Node().KindId() {
-		case 93: // Primitive type
+		case 216: // Primitive type
 			printBlue(string(text))
 
 		case 1: // Identifier
-			if cursor.Node().Parent().KindId() == 230 { // Function name
+			if cursor.Node().Parent().KindId() == 106 { // Function name
 				printMagenta(string(text))
 			} else {
 				printGreen(string(text))
 			}
 
-		case 106: // String literal
+		case 9, 10:
+			printMagenta(string(text))
+
+		case 15: // func keyword
+			printBlue(string(text))
+
+		case 7: // dot operator
+			printGreen(string(text))
+
+		case 188: // String literal
 			printYellow(string(text))
 
 		default: // Other elements
-			if cursor.Node().KindId() < 100 {
+			if cursor.Node().KindId() < 70 {
 				printWhite(string(text))
 			}
 		}
