@@ -20,3 +20,7 @@ LoadUTF8 -> fix for unicode support. I am just stupid my bad
 - Detect language with file extension and switch case for tree init (list available langs)
 - Print with colors with raylib funcs
     - This requires care for optimization. Buffer and print all at once ??
+
+### Supported languages
+- c
+- go

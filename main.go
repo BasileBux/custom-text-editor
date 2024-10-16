@@ -82,6 +82,7 @@ func DrawCursor(userText []string, nav *t.NavigationData, userStyle *t.WindowSty
 // }
 
 func main() {
-	myCode := "int main(int a, int b) {return a + b;}"
-	ts.ParseText(ts.C, &myCode)
+	// myCode := "int main(int a, int b)\n{\n\treturn a + b;\n}"
+	myCode := "func main() {\n\tvar oue int\n\tnon := a.b(c)\n\treturn true}"
+	ts.ParseText(ts.GO, &myCode)
 }

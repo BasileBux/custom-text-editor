@@ -10,6 +10,8 @@ require (
 	github.com/tree-sitter/tree-sitter-c v0.23.1
 )
 
+require github.com/tree-sitter/tree-sitter-go v0.23.1 // indirect
+
 require (
 	github.com/ebitengine/purego v0.8.0 // indirect
 	github.com/mattn/go-pointer v0.0.1 // indirect
