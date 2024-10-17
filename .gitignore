@@ -1,3 +1,4 @@
 *.log
 go.sum
 .vscode/
+highlight_samples/
