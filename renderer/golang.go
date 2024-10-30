@@ -1,4 +1,4 @@
-package treesitter
+package renderer
 
 import (
 	"fmt"

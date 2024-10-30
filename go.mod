@@ -8,9 +8,8 @@ require (
 	github.com/gen2brain/raylib-go/raylib v0.0.0-20240930075631-c66f9e2942fe
 	github.com/tree-sitter/go-tree-sitter v0.24.0
 	github.com/tree-sitter/tree-sitter-c v0.23.1
+	github.com/tree-sitter/tree-sitter-go v0.23.1
 )
-
-require github.com/tree-sitter/tree-sitter-go v0.23.1
 
 require (
 	github.com/ebitengine/purego v0.8.0 // indirect

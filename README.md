@@ -3,24 +3,24 @@
 Using [Raylib](https://www.raylib.com/)
 
 > [!WARNING]
-> Unicode is not supported for now. I have an issue with raylib I need to settle. But won't affect the rest of the developpement. 
+> Unicode is not supported for now. I have an issue with raylib I need to settle. But won't affect the rest of the developpement.
 
-## TODO
-- Treesitter synthax highlighting
-- Add theme files
+## Features
+
+- Finish syntax highlighting for C
 - Open, read / write files
+	- File selector exactly like the vim one
+- Implement scrolling both vertically and horizontally
+- Ctrl+backspace deletes whole word or whole space
 - Change fonts with env vars for font folders
 - Config file -> struct
+- Change between indentation with tabs and spaces + modify sizes
 
-LoadUTF8 -> fix for unicode support. I am just stupid my bad
+## Issues
 
-## Treesitter steps
-
-- Reading tree correctly and printing with basic colors
-- Detect language with file extension and switch case for tree init (list available langs)
-- Print with colors with raylib funcs
-    - This requires care for optimization. Buffer and print all at once ??
+- Weird alignment issues -> on c example, when adding spaces on second line, it moves the third line ??? Same behavior with base miss alignment on line "Vec2* v;"
+- Weird padding on certain machines ? Env vars ? debug build ?
+- LoadUTF8 -> fix for unicode support. I might be stupid, not sure yet
 
 ### Supported languages
 - c
-- go
