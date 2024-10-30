@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/basileb/custom_text_editor/input"
-	/* f "github.com/basileb/custom_text_editor/files" */
 	r "github.com/basileb/custom_text_editor/renderer"
 	st "github.com/basileb/custom_text_editor/settings"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -81,12 +80,6 @@ func main() {
 		SelectedRow:  0,
 	}
 
-	// userText, err = f.OpenFile("highlight_samples/main.c")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-
 	state := ProgramState{
 		Nav:            nav,
 		RenderUpdate:   true,
@@ -118,9 +111,3 @@ func main() {
 	}
 	rl.UnloadFont(userStyle.Font)
 }
-
-// func main() {
-// 	byteCode, _ := os.ReadFile("highlight_samples/main.c")
-// 	stringCode := string(byteCode)
-// 	r.RenderText(r.C, &stringCode, nil)
-// }
