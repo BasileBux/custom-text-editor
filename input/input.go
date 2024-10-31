@@ -1,8 +1,11 @@
 package input
 
 import (
+	"fmt"
 	"strings"
 
+	f "github.com/basileb/custom_text_editor/files"
+	r "github.com/basileb/custom_text_editor/renderer"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -10,6 +13,16 @@ type NavigationData struct {
 	SelectedLine        int // 0 indexed
 	AbsoluteSelectedRow int // 0 indexed, number of characters depends on nothing
 	SelectedRow         int // 0 indexed, number of characters depends on current line
+}
+
+type ProgramState struct {
+	Nav            *NavigationData
+	AcitveFile     string
+	RenderUpdate   bool
+	ActiveLanguage r.Language
+	SavedFile      []string
+	SaveState      bool
+	ForceQuit      bool
 }
 
 func lastNonSpaceCharIndex(s string) int {
@@ -22,13 +35,14 @@ func lastNonSpaceCharIndex(s string) int {
 	return lastIdx
 }
 
-func InputManager(text *[]string, nav *NavigationData) bool {
+func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool {
 	char := rl.GetCharPressed()
-	update := false
 	for char > 0 {
 		// refuse non ascii and non printable chars
 		if char >= 32 && char <= 126 {
-			update = true
+			state.SaveState = false
+			state.ForceQuit = false
+			state.RenderUpdate = true
 			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 			}
@@ -45,13 +59,29 @@ func InputManager(text *[]string, nav *NavigationData) bool {
 		char = rl.GetCharPressed()
 	}
 
+	if rl.IsKeyDown(rl.KeyLeftControl) && rl.IsKeyPressed(rl.KeyS) {
+		err := f.WriteFile(state.AcitveFile, *text)
+		if err != nil {
+			fmt.Println("Couldn't save file")
+		} else {
+			state.SaveState = true
+			copy(state.SavedFile, *text)
+		}
+	}
+
 	if rl.IsKeyPressedRepeat(rl.KeyBackspace) || rl.IsKeyPressed(rl.KeyBackspace) {
-		update = true
+		state.RenderUpdate = true
+		state.SaveState = false
+		state.ForceQuit = false
 		backSpace(text, nav)
 	}
 
 	if rl.IsKeyPressedRepeat(rl.KeyEnter) || rl.IsKeyPressed(rl.KeyEnter) {
-		update = true
+		if state.ForceQuit {
+			return true
+		}
+		state.RenderUpdate = true
+		state.SaveState = false
 		newText := make([]string, len(*text)+1)
 		copy(newText, (*text)[:nav.SelectedLine+1])
 		copy(newText[nav.SelectedLine+2:], (*text)[nav.SelectedLine+1:])
@@ -69,7 +99,9 @@ func InputManager(text *[]string, nav *NavigationData) bool {
 	}
 
 	if rl.IsKeyPressed(rl.KeyTab) {
-		update = true
+		state.RenderUpdate = true
+		state.SaveState = false
+		state.ForceQuit = false
 		begin := (*text)[nav.SelectedLine][:nav.SelectedRow]
 		end := (*text)[nav.SelectedLine][nav.SelectedRow:]
 		(*text)[nav.SelectedLine] = begin + strings.Repeat(" ", 4) + end
@@ -78,7 +110,8 @@ func InputManager(text *[]string, nav *NavigationData) bool {
 	}
 
 	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
-		update = true
+		state.RenderUpdate = true
+		state.ForceQuit = false
 		if nav.AbsoluteSelectedRow >= 1 {
 			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
@@ -113,7 +146,8 @@ func InputManager(text *[]string, nav *NavigationData) bool {
 	}
 
 	if rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight) {
-		update = true
+		state.RenderUpdate = true
+		state.ForceQuit = false
 		if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
 			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
@@ -149,7 +183,8 @@ func InputManager(text *[]string, nav *NavigationData) bool {
 	}
 
 	if (rl.IsKeyPressed(rl.KeyUp) || rl.IsKeyPressedRepeat(rl.KeyUp)) && nav.SelectedLine >= 1 {
-		update = true
+		state.RenderUpdate = true
+		state.ForceQuit = false
 		nav.SelectedLine--
 		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine])-1 {
 			nav.SelectedRow = len((*text)[nav.SelectedLine])
@@ -159,7 +194,8 @@ func InputManager(text *[]string, nav *NavigationData) bool {
 	}
 
 	if (rl.IsKeyPressed(rl.KeyDown) || rl.IsKeyPressedRepeat(rl.KeyDown)) && nav.SelectedLine < len(*text)-1 {
-		update = true
+		state.RenderUpdate = true
+		state.ForceQuit = false
 		nav.SelectedLine++
 		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine])-1 {
 			nav.SelectedRow = len((*text)[nav.SelectedLine])
@@ -167,7 +203,7 @@ func InputManager(text *[]string, nav *NavigationData) bool {
 			nav.SelectedRow = nav.AbsoluteSelectedRow
 		}
 	}
-	return update
+	return false
 }
 
 func backSpace(text *[]string, nav *NavigationData) {

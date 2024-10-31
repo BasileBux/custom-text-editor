@@ -6,20 +6,12 @@ import (
 	"os"
 	"strings"
 
+	f "github.com/basileb/custom_text_editor/files"
 	"github.com/basileb/custom_text_editor/input"
 	r "github.com/basileb/custom_text_editor/renderer"
 	st "github.com/basileb/custom_text_editor/settings"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
-
-var renderUpdate bool = true
-
-type ProgramState struct {
-	Nav            input.NavigationData
-	AcitveFile     string
-	RenderUpdate   bool
-	ActiveLanguage r.Language
-}
 
 func RedirectLogs() {
 	logFile, err := os.OpenFile("raylib.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -48,6 +40,27 @@ func DrawCursor(userText []string, nav *input.NavigationData, userStyle *st.Wind
 }
 
 func main() {
+
+	if len(os.Args) > 2 {
+		fmt.Println("You need to provide one or no filepath")
+		return
+	}
+
+	var userText []string
+	filename := ""
+	fileLanguage := r.NONE
+	userText = append(userText, "")
+	var err error
+	if len(os.Args) == 2 {
+		userText, err = f.OpenFile(os.Args[1])
+		if err != nil {
+			fmt.Println("Error: Couldn't open specified file")
+			return
+		}
+		filename = os.Args[1]
+		fileLanguage = f.GetFileExtension(os.Args[1])
+	}
+
 	RedirectLogs()
 	rl.SetConfigFlags(rl.FlagWindowResizable)
 
@@ -59,7 +72,6 @@ func main() {
 
 	userStyle := st.Compact
 	themeName := "ayu-light"
-	var err error
 	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(&themeName)
 	if err != nil {
 		fmt.Println("Error could not open color theme")
@@ -73,25 +85,39 @@ func main() {
 	rl.SetExitKey(0)
 	rl.SetTargetFPS(144)
 
-	var userText []string
-	userText = append(userText, "")
 	nav := input.NavigationData{
 		SelectedLine: 0,
 		SelectedRow:  0,
 	}
 
-	state := ProgramState{
-		Nav:            nav,
+	state := input.ProgramState{
+		Nav:            &nav,
 		RenderUpdate:   true,
-		AcitveFile:     "",
-		ActiveLanguage: r.C,
+		AcitveFile:     filename,
+		ActiveLanguage: fileLanguage,
+		SavedFile:      userText,
+		SaveState:      true,
+		ForceQuit:      false,
 	}
 
 	for !rl.WindowShouldClose() {
 
-		renderUpdate = input.InputManager(&userText, &nav)
-		if rl.IsKeyDown(rl.KeyLeftControl) && rl.IsKeyPressed(rl.KeyQ) {
+		terminate := input.InputManager(&userText, &nav, &state)
+		if terminate {
 			break
+		}
+		if rl.IsKeyDown(rl.KeyLeftControl) && rl.IsKeyPressed(rl.KeyQ) {
+			if state.SaveState {
+				break
+			} else {
+				noChanges := f.DiffText(userText, state.SavedFile)
+				if noChanges {
+					break
+				}
+				fmt.Println("The file wasn't saved. Are you sure you want to close the editor ?")
+				fmt.Println("press enter to confirm")
+				state.ForceQuit = true
+			}
 		}
 
 		rl.BeginDrawing()

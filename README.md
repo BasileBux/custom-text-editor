@@ -11,9 +11,9 @@ Using [Raylib](https://www.raylib.com/)
 ## TODO
 
 - Open, read / write files
-	- File selector exactly like vim `:Explorer`
 - Implement scrolling both vertically and horizontally (with padding)
 - Ctrl+backspace deletes whole word or whole space
+- Delete key normal behaviour + ctrl+del
 - Change fonts with env vars for font folders
 - Config file -> struct
 - Change between indentation with tabs and spaces + modify sizes
