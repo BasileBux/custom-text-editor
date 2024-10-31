@@ -1,6 +1,6 @@
 # Custom text editor
 
-A small personal project to write a text editor from 0 in Go and [Raylib](https://www.raylib.com/). This is a work in progress and pretext to learn a bunch of stuff. 
+A small personal project to write a text editor from 0 in Go and [Raylib](https://www.raylib.com/). This is a work in progress and pretext to learn a bunch of stuff. (The name is temporary until I find a nice one)
 
 The current features are really basic. Move with arrows, write text, delete text, open files, write files, ... If you are wondering what I will implement next, take a look at my [todos](#TODO).
 
