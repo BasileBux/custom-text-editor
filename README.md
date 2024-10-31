@@ -10,12 +10,12 @@ Using [Raylib](https://www.raylib.com/)
 
 ## TODO
 
-- Open, read / write files
+- Config file -> struct
 - Implement scrolling both vertically and horizontally (with padding)
+    - Cursor (arrows) then mouse / trackpad
 - Ctrl+backspace deletes whole word or whole space
 - Delete key normal behaviour + ctrl+del
 - Change fonts with env vars for font folders
-- Config file -> struct
 - Change between indentation with tabs and spaces + modify sizes
 - Copy / Paste
 - Mouse support
