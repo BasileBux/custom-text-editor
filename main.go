@@ -57,6 +57,9 @@ func main() {
 			fmt.Println("Error: Couldn't open specified file")
 			return
 		}
+		if len(userText) == 0 {
+			userText = append(userText, "")
+		}
 		filename = os.Args[1]
 		fileLanguage = f.GetFileExtension(os.Args[1])
 	}
@@ -95,10 +98,12 @@ func main() {
 		RenderUpdate:   true,
 		AcitveFile:     filename,
 		ActiveLanguage: fileLanguage,
-		SavedFile:      userText,
+		SavedFile:      make([]string, len(userText)),
 		SaveState:      true,
 		ForceQuit:      false,
 	}
+
+	copy(state.SavedFile, userText)
 
 	for !rl.WindowShouldClose() {
 

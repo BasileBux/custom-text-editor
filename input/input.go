@@ -65,6 +65,7 @@ func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool
 			fmt.Println("Couldn't save file")
 		} else {
 			state.SaveState = true
+			state.SavedFile = make([]string, len(*text))
 			copy(state.SavedFile, *text)
 		}
 	}

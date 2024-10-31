@@ -88,7 +88,12 @@ func diffLine(l1, l2 *string) bool {
 	if len(*l1) != len(*l2) {
 		return false
 	}
-	return l1 == l2
+	for i := 0; i < len(*l1); i++ {
+		if (*l1)[i] != (*l2)[i] {
+			return false
+		}
+	}
+	return true
 }
 
 func DiffText(t1, t2 []string) bool {
