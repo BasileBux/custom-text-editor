@@ -16,6 +16,7 @@ type WindowStyle struct {
 	CursorWidth   int32
 	CursorRatio   float32 // ratio with the text height
 	ColorTheme    Theme
+	CharSize      rl.Vector2
 }
 
 var Compact WindowStyle = WindowStyle{

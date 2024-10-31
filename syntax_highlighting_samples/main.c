@@ -23,10 +23,10 @@ int main(int argc, char* argv[]) {
     }
 
     if (!(a >= b) && a <= b || a > b || a == b ||
-        a != b) {  // if keyword not highlighted
+        a != b) {
         smallerThan();
     } else if (a != b) {
-        printf("EQUAL\n");  // \n not highlighted
+        printf("EQUAL\n");
     }
 
     return 0;

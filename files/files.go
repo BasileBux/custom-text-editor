@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	r "github.com/basileb/custom_text_editor/renderer"
+	t "github.com/basileb/custom_text_editor/types"
 )
 
 func getSufix(s string, separator string) (string, bool) {
@@ -28,18 +28,18 @@ func removePathGetFilename(filepath string) string {
 	return filepath[lastSlash+1:]
 }
 
-func GetFileExtension(filepath string) r.Language {
+func GetFileExtension(filepath string) t.Language {
 	filename := removePathGetFilename(filepath)
 	suffix, found := getSufix(filename, ".")
 	if !found {
-		return r.NONE
+		return t.NONE
 	}
 
 	switch suffix {
 	case "c":
-		return r.C
+		return t.C
 	default:
-		return r.NONE
+		return t.NONE
 	}
 }
 

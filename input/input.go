@@ -5,25 +5,10 @@ import (
 	"strings"
 
 	f "github.com/basileb/custom_text_editor/files"
-	r "github.com/basileb/custom_text_editor/renderer"
+	st "github.com/basileb/custom_text_editor/settings"
+	t "github.com/basileb/custom_text_editor/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
-
-type NavigationData struct {
-	SelectedLine        int // 0 indexed
-	AbsoluteSelectedRow int // 0 indexed, number of characters depends on nothing
-	SelectedRow         int // 0 indexed, number of characters depends on current line
-}
-
-type ProgramState struct {
-	Nav            *NavigationData
-	AcitveFile     string
-	RenderUpdate   bool
-	ActiveLanguage r.Language
-	SavedFile      []string
-	SaveState      bool
-	ForceQuit      bool
-}
 
 func lastNonSpaceCharIndex(s string) int {
 	lastIdx := -1
@@ -35,7 +20,7 @@ func lastNonSpaceCharIndex(s string) int {
 	return lastIdx
 }
 
-func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool {
+func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) bool {
 	char := rl.GetCharPressed()
 	for char > 0 {
 		// refuse non ascii and non printable chars
@@ -59,6 +44,7 @@ func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool
 		char = rl.GetCharPressed()
 	}
 
+	// Save
 	if rl.IsKeyDown(rl.KeyLeftControl) && rl.IsKeyPressed(rl.KeyS) {
 		err := f.WriteFile(state.AcitveFile, *text)
 		if err != nil {
@@ -70,6 +56,7 @@ func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool
 		}
 	}
 
+	// Backspace
 	if rl.IsKeyPressedRepeat(rl.KeyBackspace) || rl.IsKeyPressed(rl.KeyBackspace) {
 		state.RenderUpdate = true
 		state.SaveState = false
@@ -77,6 +64,7 @@ func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool
 		backSpace(text, nav)
 	}
 
+	// Enter
 	if rl.IsKeyPressedRepeat(rl.KeyEnter) || rl.IsKeyPressed(rl.KeyEnter) {
 		if state.ForceQuit {
 			return true
@@ -97,8 +85,14 @@ func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool
 		nav.SelectedLine++
 		nav.AbsoluteSelectedRow = 0
 		nav.SelectedRow = nav.AbsoluteSelectedRow
+
+		// Scroll down
+		if nav.SelectedLine > int(nav.ScrollOffset.Y)+state.ViewPortSteps.Y-2 {
+			nav.ScrollOffset.Y++
+		}
 	}
 
+	// Tab
 	if rl.IsKeyPressed(rl.KeyTab) {
 		state.RenderUpdate = true
 		state.SaveState = false
@@ -110,149 +104,32 @@ func InputManager(text *[]string, nav *NavigationData, state *ProgramState) bool
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 	}
 
+	// Left
 	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		if nav.AbsoluteSelectedRow >= 1 {
-			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
-				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-			}
-			if rl.IsKeyDown(rl.KeyLeftControl) {
-				jumpTo := strings.LastIndex((*text)[nav.SelectedLine][:nav.AbsoluteSelectedRow-1], " ")
-				if jumpTo == -1 {
-					nav.AbsoluteSelectedRow = 0
-				} else {
-					nav.AbsoluteSelectedRow = jumpTo + 1
-
-					if (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] == ' ' && (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] >= 32 && (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] <= 126 {
-						for {
-							if (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] == ' ' {
-								nav.AbsoluteSelectedRow--
-							} else {
-								nav.AbsoluteSelectedRow++
-								break
-							}
-						}
-					}
-				}
-			} else {
-				nav.AbsoluteSelectedRow--
-			}
-		} else if nav.SelectedLine >= 1 {
-			// when on left line end, go up end
-			nav.SelectedLine--
-			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-		}
-		nav.SelectedRow = nav.AbsoluteSelectedRow
+		arrowLeft(text, nav)
 	}
 
+	// Right
 	if rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight) {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
-			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
-				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-			}
-			if rl.IsKeyDown(rl.KeyLeftControl) {
-				jumpTo := strings.Index((*text)[nav.SelectedLine][nav.AbsoluteSelectedRow+1:], " ")
-				if jumpTo == -1 {
-					nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-				} else {
-					nav.AbsoluteSelectedRow = jumpTo + nav.AbsoluteSelectedRow + 1
-					for {
-						if (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] == ' ' {
-							if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine])-1 {
-								nav.AbsoluteSelectedRow++
-							} else {
-								nav.AbsoluteSelectedRow++
-								break
-							}
-						} else {
-							break
-						}
-					}
-				}
-			} else {
-				nav.AbsoluteSelectedRow++
-			}
-		} else if nav.SelectedLine < len((*text))-1 {
-			// when on right line end, go down and 0
-			nav.SelectedLine++
-			nav.AbsoluteSelectedRow = 0
-		}
-		nav.SelectedRow = nav.AbsoluteSelectedRow
+		arrowRight(text, nav, state)
 	}
 
+	// Up
 	if (rl.IsKeyPressed(rl.KeyUp) || rl.IsKeyPressedRepeat(rl.KeyUp)) && nav.SelectedLine >= 1 {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		nav.SelectedLine--
-		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine])-1 {
-			nav.SelectedRow = len((*text)[nav.SelectedLine])
-		} else {
-			nav.SelectedRow = nav.AbsoluteSelectedRow
-		}
+		arrowUp(text, nav)
 	}
 
+	// Down
 	if (rl.IsKeyPressed(rl.KeyDown) || rl.IsKeyPressedRepeat(rl.KeyDown)) && nav.SelectedLine < len(*text)-1 {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		nav.SelectedLine++
-		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine])-1 {
-			nav.SelectedRow = len((*text)[nav.SelectedLine])
-		} else {
-			nav.SelectedRow = nav.AbsoluteSelectedRow
-		}
+		arrowDown(text, nav, state)
 	}
 	return false
-}
-
-func backSpace(text *[]string, nav *NavigationData) {
-	// SelectedLine is not index 0 and deleting last char so going one up
-	if len((*text)[nav.SelectedLine]) <= 0 && nav.SelectedLine > 0 {
-		// remove line
-		newText := make([]string, len(*text)-1)
-		copy(newText, (*text)[:nav.SelectedLine])
-		copy(newText[nav.SelectedLine:], (*text)[1+nav.SelectedLine:])
-		*text = newText
-
-		// move one up
-		nav.SelectedLine--
-		nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-		nav.SelectedRow = nav.AbsoluteSelectedRow
-		return
-	}
-
-	// Deleting inside and at the end of a non empty line anywhere
-	if len((*text)[nav.SelectedLine]) >= 1 && nav.AbsoluteSelectedRow > 0 {
-		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
-			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-		}
-
-		// At the end
-		if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
-			(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:nav.AbsoluteSelectedRow-1] + (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow:]
-			nav.AbsoluteSelectedRow--
-			nav.SelectedRow = nav.AbsoluteSelectedRow
-
-		} else { // inside string
-			(*text)[nav.SelectedLine] = (*text)[nav.SelectedLine][:len((*text)[nav.SelectedLine])-1]
-			nav.AbsoluteSelectedRow--
-			nav.SelectedRow = nav.AbsoluteSelectedRow
-		}
-
-		// inside and erasing last char
-	} else if nav.SelectedLine > 0 {
-		remaining := (*text)[nav.SelectedLine]
-		// remove line
-		newText := make([]string, len(*text)-1)
-		copy(newText, (*text)[:nav.SelectedLine])
-		copy(newText[nav.SelectedLine:], (*text)[1+nav.SelectedLine:])
-		*text = newText
-		// move and append remaining text to line up one
-		nav.SelectedLine--
-		(*text)[nav.SelectedLine] += remaining
-		nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine]) - len(remaining)
-		nav.SelectedRow = nav.AbsoluteSelectedRow
-	}
 }

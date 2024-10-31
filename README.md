@@ -10,9 +10,10 @@ Using [Raylib](https://www.raylib.com/)
 
 ## TODO
 
-- Config file -> struct
 - Implement scrolling both vertically and horizontally (with padding)
     - Cursor (arrows) then mouse / trackpad
+- Optimize rendering, cache treesitter until keypress
+- Config file -> struct
 - Ctrl+backspace deletes whole word or whole space
 - Delete key normal behaviour + ctrl+del
 - Change fonts with env vars for font folders
