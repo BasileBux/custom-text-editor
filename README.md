@@ -20,6 +20,7 @@ To run it, Just execute the program and provide the path to the file you want to
 
 ## TODO
 
+- Fix scrolling bug. For now, I put arbitrary numbers to add to the offset. This number changes with fontsize. Make it not magic numbers
 - Clean scrolling code (currently really ugly and unmaintainable code)
 - Implement config file (store it in a struct)
 - Optimize syntax highlighting with caching (good luck)
