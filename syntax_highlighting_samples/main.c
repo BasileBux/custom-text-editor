@@ -22,8 +22,7 @@ int main(int argc, char* argv[]) {
             break;
     }
 
-    if (!(a >= b) && a <= b || a > b || a == b ||
-        a != b) {
+    if (!(a >= b) && a <= b || a > b || a == b || a != b) {
         smallerThan();
     } else if (a != b) {
         printf("EQUAL\n");
