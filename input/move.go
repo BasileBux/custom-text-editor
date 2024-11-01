@@ -5,10 +5,11 @@ import (
 
 	r "github.com/basileb/custom_text_editor/renderer"
 	t "github.com/basileb/custom_text_editor/types"
+	st "github.com/basileb/custom_text_editor/settings"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func arrowLeft(text *[]string, nav *t.NavigationData) {
+func arrowLeft(text *[]string, nav *t.NavigationData, style *st.WindowStyle) {
 
 	if nav.AbsoluteSelectedRow >= 1 {
 		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
@@ -37,8 +38,9 @@ func arrowLeft(text *[]string, nav *t.NavigationData) {
 		} else {
 			nav.AbsoluteSelectedRow--
 
-			if nav.ScrollOffset.X > 0 && nav.SelectedRow < int(nav.ScrollOffset.X) {
+			if nav.ScrollOffset.X > 0 && nav.SelectedRow < int(nav.ScrollOffset.X+1+float32(style.Cursor.CursorHorizontalPadding)) {
 				nav.ScrollOffset.X--
+				// fmt.Println("Scroll left -> Scroll offset = ", nav.ScrollOffset.X)
 			}
 		}
 	} else if nav.SelectedLine >= 1 {
@@ -51,7 +53,7 @@ func arrowLeft(text *[]string, nav *t.NavigationData) {
 	nav.SelectedRow = nav.AbsoluteSelectedRow
 }
 
-func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState) {
+func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
 	if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
 		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
@@ -80,8 +82,7 @@ func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState) {
 		} else {
 			nav.AbsoluteSelectedRow++
 
-			// BUG: ------------------------------------------
-			if nav.AbsoluteSelectedRow > int(nav.ScrollOffset.X)+state.ViewPortSteps.X-4 {
+			if nav.AbsoluteSelectedRow > int(nav.ScrollOffset.X)+state.ViewPortSteps.X-4-int(style.Cursor.CursorHorizontalPadding) {
 				nav.ScrollOffset.X++
 			}
 

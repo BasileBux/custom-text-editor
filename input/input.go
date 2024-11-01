@@ -108,14 +108,14 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowLeft(text, nav)
+		arrowLeft(text, nav, style)
 	}
 
 	// Right
 	if rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight) {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowRight(text, nav, state)
+		arrowRight(text, nav, state, style)
 	}
 
 	// Up

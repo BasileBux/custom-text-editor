@@ -56,8 +56,8 @@ func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, state *t.P
 		t.row = style.PaddingLeft
 	}
 
-	scrollHeight := (t.scrollOffset.X * style.CharSize.X) + (t.scrollOffset.X * style.FontSpacing)
-	scrollWidth := (t.scrollOffset.Y * style.CharSize.Y) + (t.scrollOffset.Y * style.FontSpacing)
+	scrollHeight := (t.scrollOffset.Y * style.CharSize.Y) + (t.scrollOffset.Y * style.FontSpacing)
+	scrollWidth := (t.scrollOffset.X * style.CharSize.X) + (t.scrollOffset.X * style.FontSpacing)
 	textPos := rl.NewVector2(t.row-scrollHeight, t.line-scrollWidth)
 
 	if textPos.Y > 0 || textPos.Y < -(textSize.Y/2) { // small optimization
@@ -73,8 +73,8 @@ func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, state *t.P
 }
 
 func noSyntaxHighlight(text *string, userStyle *st.WindowStyle, scrollOffset *rl.Vector2, style *st.WindowStyle) {
-	scrollHeight := (scrollOffset.X * style.CharSize.X) + (scrollOffset.X * style.FontSpacing)
-	scrollWidth := (scrollOffset.Y * style.CharSize.Y) // + (scrollOffset.Y * style.FontSpacing)
-	textPos := rl.NewVector2(userStyle.PaddingLeft-scrollHeight, userStyle.PaddingTop-scrollWidth)
+	scrollHeight := (scrollOffset.Y * style.CharSize.Y) + (scrollOffset.Y * style.FontSpacing)
+	scrollWidth := (scrollOffset.X * style.CharSize.X) + (scrollOffset.X * style.FontSpacing)
+	textPos := rl.NewVector2(userStyle.PaddingLeft-scrollWidth, userStyle.PaddingTop-scrollHeight)
 	rl.DrawTextEx(userStyle.Font, *text, textPos, userStyle.FontSize, 1, userStyle.ColorTheme.Editor.Fg)
 }
