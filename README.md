@@ -1,6 +1,6 @@
 # Custom text editor
 
-A small personal project to write a text editor from 0 in Go and [Raylib](https://www.raylib.com/). This is a work in progress and pretext to learn a bunch of stuff. (The name is temporary until I find a nice one)
+A small personal project to write a text editor from 0 in Go and [Raylib](https://www.raylib.com/). Cross-platform (only tested on Linux tho). This is a work in progress and pretext to learn a bunch of stuff. (The name is temporary until I find a nice one)
 
 The current features are really basic. Move with arrows, write text, delete text, open files, write files, ... If you are wondering what I will implement next, take a look at my [todos](#TODO).
 
@@ -12,10 +12,16 @@ I also implemented syntax highlighting using [Tree-sitter](https://tree-sitter.g
 ### Supported language syntax highlighting
 - c
 
+## Usage
+
+To build it all you need is golang installed on your machine. Clone the repo, execute `go mod tidy` in the directory and build it with go. 
+
+To run it, Just execute the program and provide the path to the file you want to edit. If you don't give a file, it will open a blank file which won't be able to be saved. The text editor cannot create a new file yet. 
+
 ## TODO
 
 - Implement scrolling both vertically and horizontally (with padding)
-    - Cursor (arrows) then mouse / trackpad
+    - Cursor (arrows)
 - Config file -> struct
 - Optimize syntax highlighting with caching (good luck)
 - Ctrl+backspace deletes whole word or whole space
