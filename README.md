@@ -20,19 +20,20 @@ To run it, Just execute the program and provide the path to the file you want to
 
 ## TODO
 
-- Implement scrolling both vertically and horizontally (with padding)
-    - Cursor (arrows)
-- Config file -> struct
+- Clean scrolling code (currently really ugly and unmaintainable code)
+- Implement config file (store it in a struct)
 - Optimize syntax highlighting with caching (good luck)
+- Optimize positions (text, cursor, ...) with caching (calculations are pretty big atp)
 - Ctrl+backspace deletes whole word or whole space
-- Delete key normal behaviour + ctrl+del
-- Change fonts with env vars for font folders
+- Delete key normal behavior + ctrl+del
+- Change fonts with env vars for font folders (OS dependent good luck)
 - Change between indentation with tabs and spaces + modify sizes
 - Text Selection
 - Copy / Paste
 - Mouse support (click, select, scroll)
 - Change cursor shape
 - Better theme files. Remove useless things
+- ...
 
 ## Issues
 
