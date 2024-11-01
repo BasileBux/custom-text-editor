@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	f "github.com/basileb/custom_text_editor/files"
+	r "github.com/basileb/custom_text_editor/renderer"
 	st "github.com/basileb/custom_text_editor/settings"
 	t "github.com/basileb/custom_text_editor/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -39,6 +40,9 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 				(*text)[nav.SelectedLine] += string(rune(char))
 				nav.AbsoluteSelectedRow++
 				nav.SelectedRow = nav.AbsoluteSelectedRow
+
+				// Scroll right if needed
+				r.ScrollRight(1, nav, state, style)
 			}
 		}
 		char = rl.GetCharPressed()
@@ -61,7 +65,7 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 		state.RenderUpdate = true
 		state.SaveState = false
 		state.ForceQuit = false
-		backSpace(text, nav)
+		backSpace(text, nav, state, style)
 	}
 
 	// Enter
@@ -86,10 +90,9 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 		nav.AbsoluteSelectedRow = 0
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
-		// Scroll down
-		if nav.SelectedLine > int(nav.ScrollOffset.Y)+state.ViewPortSteps.Y-2 {
-			nav.ScrollOffset.Y++
-		}
+		// Scroll down and reset horizontal scroll
+		r.ScrollDown(1, nav, state, style)
+		nav.ScrollOffset.X = 0
 	}
 
 	// Tab
@@ -102,13 +105,14 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 		(*text)[nav.SelectedLine] = begin + strings.Repeat(" ", 4) + end
 		nav.AbsoluteSelectedRow += 4
 		nav.SelectedRow = nav.AbsoluteSelectedRow
+		r.ScrollRight(4, nav, state, style)
 	}
 
 	// Left
 	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowLeft(text, nav, style)
+		arrowLeft(text, nav, state, style)
 	}
 
 	// Right
@@ -122,14 +126,14 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 	if (rl.IsKeyPressed(rl.KeyUp) || rl.IsKeyPressedRepeat(rl.KeyUp)) && nav.SelectedLine >= 1 {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowUp(text, nav)
+		arrowUp(text, nav, style)
 	}
 
 	// Down
 	if (rl.IsKeyPressed(rl.KeyDown) || rl.IsKeyPressedRepeat(rl.KeyDown)) && nav.SelectedLine < len(*text)-1 {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowDown(text, nav, state)
+		arrowDown(text, nav, state, style)
 	}
 	return false
 }

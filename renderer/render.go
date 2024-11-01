@@ -58,7 +58,7 @@ func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, state *t.P
 
 	scrollHeight := (t.scrollOffset.Y * style.CharSize.Y) + (t.scrollOffset.Y * style.FontSpacing)
 	scrollWidth := (t.scrollOffset.X * style.CharSize.X) + (t.scrollOffset.X * style.FontSpacing)
-	textPos := rl.NewVector2(t.row-scrollHeight, t.line-scrollWidth)
+	textPos := rl.NewVector2(t.row-scrollWidth, t.line-scrollHeight)
 
 	if textPos.Y > 0 || textPos.Y < -(textSize.Y/2) { // small optimization
 		rl.DrawTextEx(style.Font, *text, textPos, style.FontSize, 1, color)
