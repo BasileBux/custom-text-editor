@@ -16,9 +16,9 @@ func DrawCursor(userText []string, nav *t.NavigationData, userStyle *st.WindowSt
 	if len(userText[nav.SelectedLine]) <= 0 {
 		cursorHorizontalPos = int32(userStyle.PaddingLeft)
 	} else {
-		cursorHorizontalPos = int32(math.Floor(float64(charSize)*float64(nav.SelectedRow)+float64(charSize))) + userStyle.Cursor.CursorOffset - int32(math.Floor(float64(nav.ScrollOffset.X)*float64(charSize)))
+		cursorHorizontalPos = int32(math.Floor(float64(charSize)*float64(nav.SelectedRow)+float64(charSize))) + userStyle.Cursor.Offset - int32(math.Floor(float64(nav.ScrollOffset.X)*float64(charSize)))
 	}
 	cursorVerticalPos := int32(userStyle.PaddingTop) + int32(nav.SelectedLine)*int32(textSize.Y) + int32(nav.SelectedLine+int(userStyle.FontSpacing)) - int32(nav.ScrollOffset.Y)*int32(userStyle.FontSpacing) - int32(nav.ScrollOffset.Y)*int32(textSize.Y)
 
-	rl.DrawRectangle(cursorHorizontalPos, cursorVerticalPos, int32(userStyle.Cursor.CursorWidth), int32(textSize.Y*userStyle.Cursor.CursorRatio), userStyle.ColorTheme.Editor.Fg)
+	rl.DrawRectangle(cursorHorizontalPos, cursorVerticalPos, int32(userStyle.Cursor.Width), int32(textSize.Y*userStyle.Cursor.Ratio), userStyle.ColorTheme.Editor.Fg)
 }

@@ -38,7 +38,7 @@ func arrowLeft(text *[]string, nav *t.NavigationData, style *st.WindowStyle) {
 		} else {
 			nav.AbsoluteSelectedRow--
 
-			if nav.ScrollOffset.X > 0 && nav.SelectedRow < int(nav.ScrollOffset.X+1+float32(style.Cursor.CursorHorizontalPadding)) {
+			if nav.ScrollOffset.X > 0 && nav.SelectedRow < int(nav.ScrollOffset.X+1+float32(style.Cursor.HorizontalPadding)) {
 				nav.ScrollOffset.X--
 				// fmt.Println("Scroll left -> Scroll offset = ", nav.ScrollOffset.X)
 			}
@@ -82,7 +82,7 @@ func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState, st
 		} else {
 			nav.AbsoluteSelectedRow++
 
-			if nav.AbsoluteSelectedRow > int(nav.ScrollOffset.X)+state.ViewPortSteps.X-4-int(style.Cursor.CursorHorizontalPadding) {
+			if nav.AbsoluteSelectedRow > int(nav.ScrollOffset.X)+state.ViewPortSteps.X-4-int(style.Cursor.HorizontalPadding) {
 				nav.ScrollOffset.X++
 			}
 

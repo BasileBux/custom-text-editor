@@ -5,10 +5,11 @@ import (
 )
 
 type Cursor struct {
-	CursorOffset            int32 // horizontal distance to text
-	CursorWidth             int32
-	CursorRatio             float32 // ratio with the text height
-	CursorHorizontalPadding int32   // number of chars to show when scrolling
+	Offset            int32 // horizontal distance to text
+	Width             int32
+	Ratio             float32 // ratio with the text height
+	HorizontalPadding int32   // number of chars to show when scrolling
+	VerticalPadding   int32
 }
 
 type WindowStyle struct {
@@ -33,9 +34,10 @@ var Compact WindowStyle = WindowStyle{
 	FontSize:      30,
 	FontSpacing:   1,
 	Cursor: Cursor{
-		CursorOffset: -2,
-		CursorWidth:  1,
-		CursorRatio:  1,
-		CursorHorizontalPadding: 5,
+		Offset:            -2,
+		Width:             1,
+		Ratio:             1,
+		HorizontalPadding: 5,
+		VerticalPadding: 5,
 	},
 }
