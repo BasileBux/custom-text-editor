@@ -38,6 +38,8 @@ To run it, Just execute the program and provide the path to the file you want to
 
 ## Issues
 
+- When changing font to bigger, the cursor is drawn a bit too much to the right
+
 - Weird padding on certain machines ? Env vars ? Debug build ?
 > [!WARNING]
 > The padding error is really cryptic. However, it seems to be a really weird error tied to the monitor or some shit like that. This should be a known issue but no fix is needed.
