@@ -42,7 +42,5 @@ To run it, Just execute the program and provide the path to the file you want to
 > [!WARNING]
 > The padding error is really cryptic. However, it seems to be a really weird error tied to the monitor or some shit like that. This should be a known issue but no fix is needed.
 
-- When launching the program and the window not rescaled, there is a scroll when writing in an empty file. This causes the characters to be drawn out of frame. This is fixed after a window resize. The problem is probably initialization of the scrolling or something like that. Shouldn't be too hard to fix. 
-
 - LoadUTF8 -> fix for unicode support. I might be stupid, not sure yet
 
