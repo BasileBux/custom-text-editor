@@ -106,7 +106,7 @@ func main() {
 
 	for !rl.WindowShouldClose() {
 
-		terminate := input.InputManager(&userText, &nav, &state, &userStyle)
+		terminate := input.InputManager(&userText, &state, &userStyle)
 		if terminate {
 			break
 		}
@@ -141,7 +141,7 @@ func main() {
 			textToRender += "\n"
 		}
 		textToRender = strings.TrimRight(textToRender, "\n")
-		r.RenderText(state.ActiveLanguage, &textToRender, &state, &nav.ScrollOffset, &userStyle)
+		r.RenderText(state.ActiveLanguage, &textToRender, &state, &userStyle)
 
 		r.DrawCursor(userText, &nav, &userStyle)
 		rl.EndDrawing()

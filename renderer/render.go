@@ -72,9 +72,9 @@ func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, state *t.P
 	return false
 }
 
-func noSyntaxHighlight(text *string, userStyle *st.WindowStyle, scrollOffset *rl.Vector2, style *st.WindowStyle) {
+func noSyntaxHighlight(text *string, scrollOffset *rl.Vector2, style *st.WindowStyle) {
 	scrollHeight := (scrollOffset.Y * style.CharSize.Y) + (scrollOffset.Y * style.FontSpacing)
 	scrollWidth := (scrollOffset.X * style.CharSize.X) + (scrollOffset.X * style.FontSpacing)
-	textPos := rl.NewVector2(userStyle.PaddingLeft-scrollWidth, userStyle.PaddingTop-scrollHeight)
-	rl.DrawTextEx(userStyle.Font, *text, textPos, userStyle.FontSize, 1, userStyle.ColorTheme.Editor.Fg)
+	textPos := rl.NewVector2(style.PaddingLeft-scrollWidth, style.PaddingTop-scrollHeight)
+	rl.DrawTextEx(style.Font, *text, textPos, style.FontSize, 1, style.ColorTheme.Editor.Fg)
 }

@@ -5,11 +5,10 @@ import (
 
 	st "github.com/basileb/custom_text_editor/settings"
 	t "github.com/basileb/custom_text_editor/types"
-	rl "github.com/gen2brain/raylib-go/raylib"
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
 )
 
-func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramState, scrollOffset *rl.Vector2, userStyle *st.WindowStyle) {
+func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramState, userStyle *st.WindowStyle) {
 	cursor := node.Walk()
 	defer cursor.Close()
 
@@ -17,7 +16,7 @@ func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramSt
 	textRenderCursor := &TextRenderCursor{
 		line:         userStyle.PaddingTop,
 		row:          userStyle.PaddingLeft,
-		scrollOffset: *scrollOffset,
+		scrollOffset: state.Nav.ScrollOffset,
 	}
 
 	terminateRender := false

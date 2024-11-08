@@ -3,12 +3,11 @@ package renderer
 import (
 	st "github.com/basileb/custom_text_editor/settings"
 	t "github.com/basileb/custom_text_editor/types"
-	rl "github.com/gen2brain/raylib-go/raylib"
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
 	tree_sitter_c "github.com/tree-sitter/tree-sitter-c/bindings/go"
 )
 
-func RenderText(lang t.Language, text *string, state *t.ProgramState, scrollOffset *rl.Vector2, userStyle *st.WindowStyle) {
+func RenderText(lang t.Language, text *string, state *t.ProgramState, userStyle *st.WindowStyle) {
 	if lang != t.NONE {
 
 		code := ([]byte)(*text)
@@ -30,9 +29,9 @@ func RenderText(lang t.Language, text *string, state *t.ProgramState, scrollOffs
 
 		switch lang {
 		case t.C:
-			syntaxHighlightingC(root, code, state, scrollOffset, userStyle)
+			syntaxHighlightingC(root, code, state, userStyle)
 		}
 	} else {
-		noSyntaxHighlight(text, userStyle, scrollOffset, userStyle)
+		noSyntaxHighlight(text, &state.Nav.ScrollOffset, userStyle)
 	}
 }

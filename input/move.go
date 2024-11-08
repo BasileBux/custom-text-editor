@@ -9,8 +9,8 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func arrowLeft(text *[]string, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
-
+func arrowLeft(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
+	nav := state.Nav
 	if nav.AbsoluteSelectedRow >= 1 {
 		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
@@ -38,7 +38,7 @@ func arrowLeft(text *[]string, nav *t.NavigationData, state *t.ProgramState, sty
 						} else {
 							nav.AbsoluteSelectedRow++
 							nav.SelectedRow = nav.AbsoluteSelectedRow
-							r.ScrollRight(1, nav, state, style)
+							r.ScrollRight(1, state, style)
 							break
 						}
 					}
@@ -54,12 +54,13 @@ func arrowLeft(text *[]string, nav *t.NavigationData, state *t.ProgramState, sty
 		nav.SelectedLine--
 		nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 		nav.SelectedRow = nav.AbsoluteSelectedRow
-		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), nav, state, style)
+		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
 		r.ScrollUp(1, nav, style)
 	}
 }
 
-func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
+func arrowRight(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
+	nav := state.Nav
 	if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine]) {
 		if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 			nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
@@ -71,19 +72,19 @@ func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState, st
 			if jumpTo == -1 {
 				offset := len((*text)[nav.SelectedLine]) - nav.AbsoluteSelectedRow
 				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
-				r.ScrollRight(offset, nav, state, style)
+				r.ScrollRight(offset, state, style)
 			} else {
 				offset := jumpTo + nav.AbsoluteSelectedRow + 1 - nav.AbsoluteSelectedRow
 				nav.AbsoluteSelectedRow = jumpTo + nav.AbsoluteSelectedRow + 1
-				r.ScrollRight(offset, nav, state, style)
+				r.ScrollRight(offset, state, style)
 				for {
 					if (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] == ' ' {
 						if nav.AbsoluteSelectedRow < len((*text)[nav.SelectedLine])-1 {
 							nav.AbsoluteSelectedRow++
-							r.ScrollRight(1, nav, state, style)
+							r.ScrollRight(1, state, style)
 						} else {
 							nav.AbsoluteSelectedRow++
-							r.ScrollRight(1, nav, state, style)
+							r.ScrollRight(1, state, style)
 							break
 						}
 					} else {
@@ -94,7 +95,7 @@ func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState, st
 		} else {
 			nav.AbsoluteSelectedRow++
 			nav.SelectedRow = nav.AbsoluteSelectedRow
-			r.ScrollRight(1, nav, state, style)
+			r.ScrollRight(1, state, style)
 		}
 	} else if nav.SelectedLine < len((*text))-1 {
 		// when on right line end, go down and 0
@@ -104,7 +105,7 @@ func arrowRight(text *[]string, nav *t.NavigationData, state *t.ProgramState, st
 
 		// going to begining of next line so reset X scroll offset and scroll down
 		nav.ScrollOffset.X = 0
-		r.ScrollDown(1, nav, state, style)
+		r.ScrollDown(1, state, style)
 	}
 	nav.SelectedRow = nav.AbsoluteSelectedRow
 }
@@ -128,5 +129,5 @@ func arrowDown(text *[]string, nav *t.NavigationData, state *t.ProgramState, sty
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 	}
 
-	r.ScrollDown(1, nav, state, style)
+	r.ScrollDown(1, state, style)
 }

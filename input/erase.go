@@ -6,7 +6,8 @@ import (
 	t "github.com/basileb/custom_text_editor/types"
 )
 
-func backSpace(text *[]string, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
+func backSpace(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
+	nav := state.Nav
 	// SelectedLine is not index 0 and deleting last char so going one up
 	if len((*text)[nav.SelectedLine]) <= 0 && nav.SelectedLine > 0 {
 		// remove line
@@ -20,7 +21,7 @@ func backSpace(text *[]string, nav *t.NavigationData, state *t.ProgramState, sty
 		nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
-		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), nav, state, style)
+		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
 		r.ScrollUp(1, nav, style)
 		return
 	}
@@ -59,7 +60,7 @@ func backSpace(text *[]string, nav *t.NavigationData, state *t.ProgramState, sty
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
 		// Scroll one up and go at end of line
-		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), nav, state, style)
+		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
 		r.ScrollUp(1, nav, style)
 	}
 }

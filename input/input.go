@@ -21,7 +21,8 @@ func lastNonSpaceCharIndex(s string) int {
 	return lastIdx
 }
 
-func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) bool {
+func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) bool {
+	nav := state.Nav
 	char := rl.GetCharPressed()
 	for char > 0 {
 		// refuse non ascii and non printable chars
@@ -42,7 +43,7 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 				nav.SelectedRow = nav.AbsoluteSelectedRow
 
 				// Scroll right if needed
-				r.ScrollRight(1, nav, state, style)
+				r.ScrollRight(1, state, style)
 			}
 		}
 		char = rl.GetCharPressed()
@@ -65,7 +66,7 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 		state.RenderUpdate = true
 		state.SaveState = false
 		state.ForceQuit = false
-		backSpace(text, nav, state, style)
+		backSpace(text, state, style)
 	}
 
 	// Enter
@@ -91,7 +92,7 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
 		// Scroll down and reset horizontal scroll
-		r.ScrollDown(1, nav, state, style)
+		r.ScrollDown(1, state, style)
 		nav.ScrollOffset.X = 0
 	}
 
@@ -105,21 +106,21 @@ func InputManager(text *[]string, nav *t.NavigationData, state *t.ProgramState, 
 		(*text)[nav.SelectedLine] = begin + strings.Repeat(" ", 4) + end
 		nav.AbsoluteSelectedRow += 4
 		nav.SelectedRow = nav.AbsoluteSelectedRow
-		r.ScrollRight(4, nav, state, style)
+		r.ScrollRight(4, state, style)
 	}
 
 	// Left
 	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowLeft(text, nav, state, style)
+		arrowLeft(text, state, style)
 	}
 
 	// Right
 	if rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight) {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowRight(text, nav, state, style)
+		arrowRight(text, state, style)
 	}
 
 	// Up

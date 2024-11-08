@@ -14,8 +14,8 @@ import (
 	- Backspace
 */
 
-func ResetHorizontalScrollRight(lineSize float32, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
-	nav.ScrollOffset.X = lineSize - float32(state.ViewPortSteps.X) + 4 + float32(style.Cursor.HorizontalPadding)
+func ResetHorizontalScrollRight(lineSize float32, state *t.ProgramState, style *st.WindowStyle) {
+	state.Nav.ScrollOffset.X = lineSize - float32(state.ViewPortSteps.X) + 4 + float32(style.Cursor.HorizontalPadding)
 }
 
 func ScrollLeft(size int, nav *t.NavigationData, style *st.WindowStyle) {
@@ -28,7 +28,8 @@ func ScrollLeft(size int, nav *t.NavigationData, style *st.WindowStyle) {
 	}
 }
 
-func ScrollRight(size int, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
+func ScrollRight(size int, state *t.ProgramState, style *st.WindowStyle) {
+	nav := state.Nav
 	if nav.AbsoluteSelectedRow > int(nav.ScrollOffset.X)+state.ViewPortSteps.X-4-int(style.Cursor.HorizontalPadding) {
 		nav.ScrollOffset.X += float32(size)
 	}
@@ -44,7 +45,8 @@ func ScrollUp(size int, nav *t.NavigationData, style *st.WindowStyle) {
 	}
 }
 
-func ScrollDown(size int, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
+func ScrollDown(size int, state *t.ProgramState, style *st.WindowStyle) {
+	nav := state.Nav
 	if nav.SelectedLine > int(nav.ScrollOffset.Y)+state.ViewPortSteps.Y-2-int(style.Cursor.VerticalPadding) {
 		nav.ScrollOffset.Y += float32(size)
 	}
