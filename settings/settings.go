@@ -38,6 +38,6 @@ var Compact WindowStyle = WindowStyle{
 		Width:             1,
 		Ratio:             1,
 		HorizontalPadding: 5,
-		VerticalPadding: 5,
+		VerticalPadding:   5,
 	},
 }

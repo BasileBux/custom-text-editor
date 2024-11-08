@@ -21,6 +21,7 @@ func backSpace(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 		nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
+		// BUG: The offset resulting of this is wrong I think
 		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
 		r.ScrollUp(1, nav, style)
 		return
@@ -60,6 +61,7 @@ func backSpace(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
 		// Scroll one up and go at end of line
+		// BUG: The offset resulting of this is wrong I think
 		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
 		r.ScrollUp(1, nav, style)
 	}

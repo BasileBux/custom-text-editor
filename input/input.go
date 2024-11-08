@@ -134,7 +134,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 	if (rl.IsKeyPressed(rl.KeyDown) || rl.IsKeyPressedRepeat(rl.KeyDown)) && nav.SelectedLine < len(*text)-1 {
 		state.RenderUpdate = true
 		state.ForceQuit = false
-		arrowDown(text, nav, state, style)
+		arrowDown(text, state, style)
 	}
 	return false
 }

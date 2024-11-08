@@ -5,21 +5,16 @@ import (
 	t "github.com/basileb/custom_text_editor/types"
 )
 
-/*
-	Reset horizontal scroll:
-	- on new line (= enter) and go down on line which isn't long enough
-
-	Moving on other input than arrows:
-	- Ascii chars
-	- Backspace
-*/
-
 func ResetHorizontalScrollRight(lineSize float32, state *t.ProgramState, style *st.WindowStyle) {
-	state.Nav.ScrollOffset.X = lineSize - float32(state.ViewPortSteps.X) + 4 + float32(style.Cursor.HorizontalPadding)
+	// +4 is a magic number. This should be a setting
+	if lineSize > float32(state.ViewPortSteps.X)-4 {
+		state.Nav.ScrollOffset.X = lineSize - float32(state.ViewPortSteps.X) + 4 + float32(style.Cursor.HorizontalPadding)
+	}
 }
 
 func ScrollLeft(size int, nav *t.NavigationData, style *st.WindowStyle) {
 	if nav.ScrollOffset.X > float32(size-1) {
+		// +1 is a magic number. This should be a setting
 		if nav.SelectedRow < int(nav.ScrollOffset.X+1+float32(style.Cursor.HorizontalPadding)) {
 			nav.ScrollOffset.X -= float32(size)
 		}
@@ -30,6 +25,7 @@ func ScrollLeft(size int, nav *t.NavigationData, style *st.WindowStyle) {
 
 func ScrollRight(size int, state *t.ProgramState, style *st.WindowStyle) {
 	nav := state.Nav
+	// -4 is a magic number. This should be a setting
 	if nav.AbsoluteSelectedRow > int(nav.ScrollOffset.X)+state.ViewPortSteps.X-4-int(style.Cursor.HorizontalPadding) {
 		nav.ScrollOffset.X += float32(size)
 	}
@@ -47,6 +43,7 @@ func ScrollUp(size int, nav *t.NavigationData, style *st.WindowStyle) {
 
 func ScrollDown(size int, state *t.ProgramState, style *st.WindowStyle) {
 	nav := state.Nav
+	// -2 is a magic number. This should be a setting
 	if nav.SelectedLine > int(nav.ScrollOffset.Y)+state.ViewPortSteps.Y-2-int(style.Cursor.VerticalPadding) {
 		nav.ScrollOffset.Y += float32(size)
 	}

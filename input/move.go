@@ -29,7 +29,9 @@ func arrowLeft(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 				nav.SelectedRow = nav.AbsoluteSelectedRow
 				r.ScrollLeft(offset, nav, style)
 
-				if (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] == ' ' && (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] >= 32 && (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] <= 126 {
+				if (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] == ' ' &&
+					(*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] >= 32 &&
+					(*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] <= 126 {
 					for {
 						if (*text)[nav.SelectedLine][nav.AbsoluteSelectedRow] == ' ' {
 							nav.AbsoluteSelectedRow--
@@ -121,7 +123,8 @@ func arrowUp(text *[]string, nav *t.NavigationData, style *st.WindowStyle) {
 	r.ScrollUp(1, nav, style)
 }
 
-func arrowDown(text *[]string, nav *t.NavigationData, state *t.ProgramState, style *st.WindowStyle) {
+func arrowDown(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
+	nav := state.Nav
 	nav.SelectedLine++
 	if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine])-1 {
 		nav.SelectedRow = len((*text)[nav.SelectedLine])
