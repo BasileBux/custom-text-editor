@@ -98,9 +98,11 @@ func main() {
 		SaveState:      true,
 		ForceQuit:      false,
 		ViewPortSize: rl.Vector2{
-			X: 0,
-			Y: 0},
+			X: float32(rl.GetRenderWidth()),
+			Y: float32(rl.GetRenderHeight())},
 	}
+	state.ViewPortSteps.X = int(state.ViewPortSize.X / userStyle.CharSize.X)
+	state.ViewPortSteps.Y = int(state.ViewPortSize.Y / userStyle.CharSize.Y)
 
 	copy(state.SavedFile, userText)
 
