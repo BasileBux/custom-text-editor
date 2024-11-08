@@ -20,6 +20,7 @@ func backSpace(text *[]string, nav *t.NavigationData, state *t.ProgramState, sty
 		nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
+		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), nav, state, style)
 		r.ScrollUp(1, nav, style)
 		return
 	}
