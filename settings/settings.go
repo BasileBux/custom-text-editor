@@ -31,7 +31,7 @@ var Compact WindowStyle = WindowStyle{
 	PaddingBottom: 13.0,
 	PaddingLeft:   13.0,
 	Font:          rl.Font{},
-	FontSize:      30,
+	FontSize:      40,
 	FontSpacing:   1,
 	Cursor: Cursor{
 		Offset:            -2,

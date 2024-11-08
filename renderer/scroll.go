@@ -6,7 +6,7 @@ import (
 )
 
 func ResetHorizontalScrollRight(lineSize float32, state *t.ProgramState, style *st.WindowStyle) {
-	// +4 is a magic number. This should be a setting
+	// +4 is a magic number. This won't adapt to highDPI settings which I want later
 	if lineSize > float32(state.ViewPortSteps.X)-4 {
 		state.Nav.ScrollOffset.X = lineSize - float32(state.ViewPortSteps.X) + 4 + float32(style.Cursor.HorizontalPadding)
 	}
@@ -14,7 +14,7 @@ func ResetHorizontalScrollRight(lineSize float32, state *t.ProgramState, style *
 
 func ScrollLeft(size int, nav *t.NavigationData, style *st.WindowStyle) {
 	if nav.ScrollOffset.X > float32(size-1) {
-		// +1 is a magic number. This should be a setting
+		// +1 is a magic number. This won't adapt to highDPI settings which I want later
 		if nav.SelectedRow < int(nav.ScrollOffset.X+1+float32(style.Cursor.HorizontalPadding)) {
 			nav.ScrollOffset.X -= float32(size)
 		}
@@ -25,7 +25,7 @@ func ScrollLeft(size int, nav *t.NavigationData, style *st.WindowStyle) {
 
 func ScrollRight(size int, state *t.ProgramState, style *st.WindowStyle) {
 	nav := state.Nav
-	// -4 is a magic number. This should be a setting
+	// -4 is a magic number. This won't adapt to highDPI settings which I want later
 	if nav.AbsoluteSelectedRow > int(nav.ScrollOffset.X)+state.ViewPortSteps.X-4-int(style.Cursor.HorizontalPadding) {
 		nav.ScrollOffset.X += float32(size)
 	}
@@ -43,7 +43,7 @@ func ScrollUp(size int, nav *t.NavigationData, style *st.WindowStyle) {
 
 func ScrollDown(size int, state *t.ProgramState, style *st.WindowStyle) {
 	nav := state.Nav
-	// -2 is a magic number. This should be a setting
+	// -2 is a magic number. This won't adapt to highDPI settings which I want later
 	if nav.SelectedLine > int(nav.ScrollOffset.Y)+state.ViewPortSteps.Y-2-int(style.Cursor.VerticalPadding) {
 		nav.ScrollOffset.Y += float32(size)
 	}

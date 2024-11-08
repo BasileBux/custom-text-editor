@@ -54,6 +54,7 @@ func main() {
 	RedirectLogs()
 
 	rl.SetConfigFlags(rl.FlagWindowResizable)
+	// rl.SetConfigFlags(rl.FlagWindowHighdpi)
 
 	rl.InitWindow(800, 800, "My custom text editor")
 	if !rl.IsWindowReady() {
@@ -78,6 +79,7 @@ func main() {
 
 	charSize := rl.MeasureTextEx(userStyle.Font, "a", userStyle.FontSize, userStyle.FontSpacing)
 	userStyle.CharSize = charSize
+	fmt.Println(charSize)
 
 	nav := t.NavigationData{
 		SelectedLine:        0,

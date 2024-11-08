@@ -13,7 +13,7 @@ func DrawCursor(userText []string, nav *t.NavigationData, userStyle *st.WindowSt
 	charSize := textSize.X / float32(len(userText[nav.SelectedLine]))
 
 	var cursorHorizontalPos int32
-	if len(userText[nav.SelectedLine]) <= 0 {
+	if len(userText[nav.SelectedLine]) <= 0 || userText[nav.SelectedLine] == "\n" {
 		cursorHorizontalPos = int32(userStyle.PaddingLeft)
 	} else {
 		cursorHorizontalPos = int32(math.Floor(float64(charSize)*float64(nav.SelectedRow)+float64(charSize))) + userStyle.Cursor.Offset - int32(math.Floor(float64(nav.ScrollOffset.X)*float64(charSize)))
