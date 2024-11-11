@@ -79,7 +79,6 @@ func main() {
 
 	charSize := rl.MeasureTextEx(userStyle.Font, "a", userStyle.FontSize, userStyle.FontSpacing)
 	userStyle.CharSize = charSize
-	fmt.Println(charSize)
 
 	nav := t.NavigationData{
 		SelectedLine:        0,
@@ -130,6 +129,12 @@ func main() {
 
 		rl.BeginDrawing()
 		rl.ClearBackground(userStyle.ColorTheme.Editor.Bg)
+
+		// DEBUG --------------------------------------------------
+
+		// rl.DrawRectangle(0, 0, 10000, 10000, rl.Red)
+
+		// DEBUG --------------------------------------------------
 
 		if rl.IsWindowResized() {
 			state.ViewPortSize.X = float32(rl.GetRenderWidth())

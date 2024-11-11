@@ -60,6 +60,7 @@ func backSpace(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
 		// Scroll one up and go at end of line
+		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
 		r.ScrollUp(1, nav, style)
 	}
 }

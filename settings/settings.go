@@ -5,7 +5,6 @@ import (
 )
 
 type Cursor struct {
-	Offset            int32 // horizontal distance to text
 	Width             int32
 	Ratio             float32 // ratio with the text height
 	HorizontalPadding int32   // number of chars to show when scrolling
@@ -31,10 +30,9 @@ var Compact WindowStyle = WindowStyle{
 	PaddingBottom: 13.0,
 	PaddingLeft:   13.0,
 	Font:          rl.Font{},
-	FontSize:      40,
+	FontSize:      30,
 	FontSpacing:   1,
 	Cursor: Cursor{
-		Offset:            -2,
 		Width:             1,
 		Ratio:             1,
 		HorizontalPadding: 5,
