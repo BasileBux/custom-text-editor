@@ -46,7 +46,7 @@ func arrowLeft(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 					}
 				}
 			}
-		} else {
+		} else if nav.AbsoluteSelectedRow > 0 {
 			nav.AbsoluteSelectedRow--
 			nav.SelectedRow = nav.AbsoluteSelectedRow
 			r.ScrollLeft(1, nav, style)
