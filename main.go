@@ -54,9 +54,8 @@ func main() {
 	RedirectLogs()
 
 	rl.SetConfigFlags(rl.FlagWindowResizable)
-	// rl.SetConfigFlags(rl.FlagWindowHighdpi)
 
-	rl.InitWindow(800, 800, "My custom text editor")
+	rl.InitWindow(800, 800, "kenzan")
 	if !rl.IsWindowReady() {
 		log.Panic("Window didn't open correctly ???")
 	}
@@ -102,8 +101,8 @@ func main() {
 			X: float32(rl.GetRenderWidth()),
 			Y: float32(rl.GetRenderHeight())},
 	}
-	state.ViewPortSteps.X = int(state.ViewPortSize.X / userStyle.CharSize.X)
-	state.ViewPortSteps.Y = int(state.ViewPortSize.Y / userStyle.CharSize.Y)
+	state.ViewPortSteps.X = int(state.ViewPortSize.X / (userStyle.CharSize.X + userStyle.FontSpacing))
+	state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
 
 	copy(state.SavedFile, userText)
 
@@ -130,18 +129,12 @@ func main() {
 		rl.BeginDrawing()
 		rl.ClearBackground(userStyle.ColorTheme.Editor.Bg)
 
-		// DEBUG --------------------------------------------------
-
-		// rl.DrawRectangle(0, 0, 10000, 10000, rl.Red)
-
-		// DEBUG --------------------------------------------------
-
 		if rl.IsWindowResized() {
 			state.ViewPortSize.X = float32(rl.GetRenderWidth())
 			state.ViewPortSize.Y = float32(rl.GetRenderHeight())
 
-			state.ViewPortSteps.X = int(state.ViewPortSize.X / userStyle.CharSize.X)
-			state.ViewPortSteps.Y = int(state.ViewPortSize.Y / userStyle.CharSize.Y)
+			state.ViewPortSteps.X = int(state.ViewPortSize.X / (userStyle.CharSize.X + userStyle.FontSpacing))
+			state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
 		}
 
 		var textToRender string
