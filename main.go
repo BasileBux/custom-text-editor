@@ -10,6 +10,7 @@ import (
 	"github.com/basileb/custom_text_editor/input"
 	r "github.com/basileb/custom_text_editor/renderer"
 	st "github.com/basileb/custom_text_editor/settings"
+	t "github.com/basileb/custom_text_editor/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -25,20 +26,6 @@ func RedirectLogs() {
 	})
 }
 
-func DrawCursor(userText []string, nav *input.NavigationData, userStyle *st.WindowStyle) {
-	textSize := rl.MeasureTextEx(userStyle.Font, userText[nav.SelectedLine], userStyle.FontSize, userStyle.FontSpacing)
-	charSize := textSize.X / float32(len(userText[nav.SelectedLine]))
-
-	var cursorHorizontalPos int32
-	if len(userText[nav.SelectedLine]) <= 0 {
-		cursorHorizontalPos = int32(userStyle.PaddingLeft)
-	} else {
-		cursorHorizontalPos = int32(charSize*float32(nav.SelectedRow)+charSize) + userStyle.CursorOffset
-	}
-
-	rl.DrawRectangle(cursorHorizontalPos, int32(userStyle.PaddingTop)+int32(nav.SelectedLine)*int32(textSize.Y)+int32(nav.SelectedLine+int(userStyle.FontSpacing)), int32(userStyle.CursorWidth), int32(textSize.Y*userStyle.CursorRatio), userStyle.ColorTheme.Editor.Fg)
-}
-
 func main() {
 
 	if len(os.Args) > 2 {
@@ -48,7 +35,7 @@ func main() {
 
 	var userText []string
 	filename := ""
-	fileLanguage := r.NONE
+	fileLanguage := t.NONE
 	userText = append(userText, "")
 	var err error
 	if len(os.Args) == 2 {
@@ -65,9 +52,10 @@ func main() {
 	}
 
 	RedirectLogs()
+
 	rl.SetConfigFlags(rl.FlagWindowResizable)
 
-	rl.InitWindow(800, 800, "My custom text editor")
+	rl.InitWindow(800, 800, "kenzan")
 	if !rl.IsWindowReady() {
 		log.Panic("Window didn't open correctly ???")
 	}
@@ -88,12 +76,20 @@ func main() {
 	rl.SetExitKey(0)
 	rl.SetTargetFPS(144)
 
-	nav := input.NavigationData{
-		SelectedLine: 0,
-		SelectedRow:  0,
+	charSize := rl.MeasureTextEx(userStyle.Font, "a", userStyle.FontSize, userStyle.FontSpacing)
+	userStyle.CharSize = charSize
+
+	nav := t.NavigationData{
+		SelectedLine:        0,
+		SelectedRow:         0,
+		AbsoluteSelectedRow: 0,
+		ScrollOffset: rl.Vector2{
+			X: 0,
+			Y: 0,
+		},
 	}
 
-	state := input.ProgramState{
+	state := t.ProgramState{
 		Nav:            &nav,
 		RenderUpdate:   true,
 		AcitveFile:     filename,
@@ -101,13 +97,18 @@ func main() {
 		SavedFile:      make([]string, len(userText)),
 		SaveState:      true,
 		ForceQuit:      false,
+		ViewPortSize: rl.Vector2{
+			X: float32(rl.GetRenderWidth()),
+			Y: float32(rl.GetRenderHeight())},
 	}
+	state.ViewPortSteps.X = int(state.ViewPortSize.X / (userStyle.CharSize.X + userStyle.FontSpacing))
+	state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
 
 	copy(state.SavedFile, userText)
 
 	for !rl.WindowShouldClose() {
 
-		terminate := input.InputManager(&userText, &nav, &state)
+		terminate := input.InputManager(&userText, &state, &userStyle)
 		if terminate {
 			break
 		}
@@ -128,15 +129,23 @@ func main() {
 		rl.BeginDrawing()
 		rl.ClearBackground(userStyle.ColorTheme.Editor.Bg)
 
+		if rl.IsWindowResized() {
+			state.ViewPortSize.X = float32(rl.GetRenderWidth())
+			state.ViewPortSize.Y = float32(rl.GetRenderHeight())
+
+			state.ViewPortSteps.X = int(state.ViewPortSize.X / (userStyle.CharSize.X + userStyle.FontSpacing))
+			state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
+		}
+
 		var textToRender string
 		for _, l := range userText {
 			textToRender += l
 			textToRender += "\n"
 		}
 		textToRender = strings.TrimRight(textToRender, "\n")
-		r.RenderText(state.ActiveLanguage, &textToRender, &userStyle)
+		r.RenderText(state.ActiveLanguage, &textToRender, &state, &userStyle)
 
-		DrawCursor(userText, &nav, &userStyle)
+		r.DrawCursor(userText, &nav, &userStyle)
 		rl.EndDrawing()
 
 	}

@@ -4,6 +4,13 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+type Cursor struct {
+	Width             int32
+	Ratio             float32 // ratio with the text height
+	HorizontalPadding int32   // number of chars to show when scrolling
+	VerticalPadding   int32
+}
+
 type WindowStyle struct {
 	PaddingTop    float32
 	PaddingRight  float32
@@ -12,10 +19,9 @@ type WindowStyle struct {
 	Font          rl.Font
 	FontSize      float32
 	FontSpacing   float32
-	CursorOffset  int32 // horizontal distance to text
-	CursorWidth   int32
-	CursorRatio   float32 // ratio with the text height
+	Cursor        Cursor
 	ColorTheme    Theme
+	CharSize      rl.Vector2
 }
 
 var Compact WindowStyle = WindowStyle{
@@ -26,7 +32,10 @@ var Compact WindowStyle = WindowStyle{
 	Font:          rl.Font{},
 	FontSize:      30,
 	FontSpacing:   1,
-	CursorOffset:  -2,
-	CursorWidth:   1,
-	CursorRatio:   1,
+	Cursor: Cursor{
+		Width:             1,
+		Ratio:             1,
+		HorizontalPadding: 5,
+		VerticalPadding:   5,
+	},
 }

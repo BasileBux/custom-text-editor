@@ -2,32 +2,20 @@ package renderer
 
 import (
 	st "github.com/basileb/custom_text_editor/settings"
+	t "github.com/basileb/custom_text_editor/types"
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
 	tree_sitter_c "github.com/tree-sitter/tree-sitter-c/bindings/go"
 )
 
-type Language = uint8
-
-const (
-	C Language = iota
-	// GO
-	// CPP
-	// PYTHON
-	// RUST
-	// JAVA
-	// JAVASCRIPT
-	NONE
-)
-
-func RenderText(lang Language, text *string, userStyle *st.WindowStyle) {
-	if lang != NONE {
+func RenderText(lang t.Language, text *string, state *t.ProgramState, userStyle *st.WindowStyle) {
+	if lang != t.NONE {
 
 		code := ([]byte)(*text)
 		parser := tree_sitter.NewParser()
 		defer parser.Close()
 
 		switch lang {
-		case C:
+		case t.C:
 			parser.SetLanguage(tree_sitter.NewLanguage(tree_sitter_c.Language()))
 
 		default:
@@ -40,10 +28,10 @@ func RenderText(lang Language, text *string, userStyle *st.WindowStyle) {
 		root := tree.RootNode()
 
 		switch lang {
-		case C:
-			syntaxHighlightingC(root, code, userStyle)
+		case t.C:
+			syntaxHighlightingC(root, code, state, userStyle)
 		}
 	} else {
-		noSyntaxHighlight(text, userStyle)
+		noSyntaxHighlight(text, &state.Nav.ScrollOffset, userStyle)
 	}
 }

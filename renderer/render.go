@@ -4,13 +4,14 @@ import (
 	"strings"
 
 	st "github.com/basileb/custom_text_editor/settings"
+	t "github.com/basileb/custom_text_editor/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type TextRenderCursor struct {
-	line       float32 // pixels
-	row        float32 // pixels
-	widthReset bool
+	line         float32 // pixels
+	row          float32 // pixels
+	scrollOffset rl.Vector2
 }
 
 // Trailing spaces are spaces blocks followed by a '\n'
@@ -35,7 +36,7 @@ func removeTrailingSpaces(input string) string {
 	return string(result)
 }
 
-func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, style *st.WindowStyle) {
+func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, state *t.ProgramState, style *st.WindowStyle) bool {
 
 	textSize := rl.MeasureTextEx(style.Font, *text, style.FontSize, style.FontSpacing)
 
@@ -55,12 +56,25 @@ func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, style *st.
 		t.row = style.PaddingLeft
 	}
 
-	textPos := rl.NewVector2(t.row, t.line)
-	rl.DrawTextEx(style.Font, *text, textPos, style.FontSize, 1, color)
+	scrollHeight := (t.scrollOffset.Y * style.CharSize.Y) + (t.scrollOffset.Y * style.FontSpacing)
+	scrollWidth := (t.scrollOffset.X * style.CharSize.X) + (t.scrollOffset.X * style.FontSpacing)
+	textPos := rl.NewVector2(t.row-scrollWidth, t.line-scrollHeight)
+
+	if textPos.Y > 0 || textPos.Y < -(textSize.Y/2) { // small optimization
+		rl.DrawTextEx(style.Font, *text, textPos, style.FontSize, 1, color)
+	}
 	t.row += textSize.X + style.FontSpacing
+
+	if t.line > (state.ViewPortSize.Y*style.CharSize.Y + t.scrollOffset.Y) {
+		return true
+	}
+
+	return false
 }
 
-func noSyntaxHighlight(text *string, userStyle *st.WindowStyle) {
-	textPos := rl.NewVector2(userStyle.PaddingLeft, userStyle.PaddingTop)
-	rl.DrawTextEx(userStyle.Font, *text, textPos, userStyle.FontSize, 1, userStyle.ColorTheme.Editor.Fg)
+func noSyntaxHighlight(text *string, scrollOffset *rl.Vector2, style *st.WindowStyle) {
+	scrollHeight := (scrollOffset.Y * style.CharSize.Y) + (scrollOffset.Y * style.FontSpacing)
+	scrollWidth := (scrollOffset.X * style.CharSize.X) + (scrollOffset.X * style.FontSpacing)
+	textPos := rl.NewVector2(style.PaddingLeft-scrollWidth, style.PaddingTop-scrollHeight)
+	rl.DrawTextEx(style.Font, *text, textPos, style.FontSize, 1, style.ColorTheme.Editor.Fg)
 }
