@@ -1,6 +1,9 @@
 package settings
 
 import (
+	"encoding/json"
+	"os"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -41,39 +44,41 @@ var Compact WindowStyle = WindowStyle{
 }
 
 type Settings struct {
-    UI struct {
-        Padding struct {
-            Top    int    `json:"top"`
-            Right  int    `json:"right"`
-            Bottom int    `json:"bottom"`
-            Left   int    `json:"left"`
-        } `json:"padding"`
-        FontFamily    string `json:"font_familly"`
-        FontSpacing   int    `json:"font_spacing"`
-        ScrollPadding int    `json:"scroll_padding"`
-        CursorRatio   int    `json:"cursor_ratio"`
-        Theme         string `json:"theme"`
-    } `json:"ui"`
+	UI struct {
+		Padding struct {
+			Top    int `json:"top"`
+			Right  int `json:"right"`
+			Bottom int `json:"bottom"`
+			Left   int `json:"left"`
+		} `json:"padding"`
+		FontFamily    string `json:"font_familly"`
+		FontSize      int    `json:"font_size"`
+		FontSpacing   int    `json:"font_spacing"`
+		ScrollPadding int    `json:"scroll_padding"`
+		CursorRatio   int    `json:"cursor_ratio"`
+		Theme         string `json:"theme"`
+	} `json:"ui"`
 }
 
-// func loadSettings(path string) (*Settings, error) {
-//     data, err := os.ReadFile(path)
-//     if err != nil {
-//         return nil, err
-//     }
-//
-//     var settings Settings
-//     if err := json.Unmarshal(data, &settings); err != nil {
-//         return nil, err
-//     }
-//
-//     return &settings, nil
-// }
-//
-// func LoadAllSettings() (*Settings, error) {
-// 	default, err := loadSettings("default.toml"); err != nil {
-// 		return nil, err
-// 	}
-//
-// 	return &settings, nil
-// }
+func loadSettings(path string) (*Settings, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var settings Settings
+	if err := json.Unmarshal(data, &settings); err != nil {
+		return nil, err
+	}
+
+	return &settings, nil
+}
+
+func LoadAllSettings() (*Settings, error) {
+	def, err := loadSettings("default.json")
+	if err != nil {
+		return nil, err
+	}
+
+	return def, nil
+}

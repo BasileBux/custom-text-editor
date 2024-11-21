@@ -14,11 +14,11 @@ All the following config fields will have to be after the following header
 - Setting: `padding_[sub-setting]`
   - Sub-settings: `top`, `right`, `bottom`, `left`
 - Value type: integer
-- Default: 0
+- Default: 13
 
 ```toml
-padding_top = 0
-padding_right = 0
+padding_top = 13
+padding_right = 13
 ...
 ```
 
@@ -28,6 +28,13 @@ padding_right = 0
 - Setting: `font_family`
 - Value type: string
 - Default: "GeistMonoNerdFont-Regular"
+
+### Font size
+
+- Description: Font size to use in the editor
+- Setting: `font_size`
+- Value type: integer
+- Default: 30
 
 ### Font spacing
 

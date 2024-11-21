@@ -61,15 +61,31 @@ func main() {
 	}
 	defer rl.CloseWindow()
 
-	userStyle := st.Compact
-	themeName := "ayu-light"
-	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(&themeName)
+	settings, err := st.LoadAllSettings()
+	if err != nil {
+		panic("Settings couldn't load")
+	}
+	userStyle := st.WindowStyle{
+		PaddingTop:    float32(settings.UI.Padding.Top),
+		PaddingRight:  float32(settings.UI.Padding.Right),
+		PaddingBottom: float32(settings.UI.Padding.Bottom),
+		PaddingLeft:   float32(settings.UI.Padding.Left),
+		Font:          rl.LoadFontEx("GeistMonoNerdFont-Regular.otf", 100, nil),
+		FontSize:      float32(settings.UI.FontSize),
+		FontSpacing:   float32(settings.UI.FontSpacing),
+		Cursor: st.Cursor{
+			Width:             1,
+			Ratio:             float32(settings.UI.CursorRatio),
+			HorizontalPadding: int32(settings.UI.ScrollPadding),
+			VerticalPadding:   int32(settings.UI.ScrollPadding),
+		},
+	}
+
+	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(&settings.UI.Theme)
 	if err != nil {
 		fmt.Println("Error could not open color theme")
 		return
 	}
-
-	userStyle.Font = rl.LoadFontEx("GeistMonoNerdFont-Regular.otf", 100, nil)
 
 	rl.SetTextLineSpacing(int(userStyle.FontSpacing))
 	rl.SetTextureFilter(userStyle.Font.Texture, rl.FilterBilinear)

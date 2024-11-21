@@ -1,15 +1,16 @@
 {
-	"ui": {
-		"padding": {
-			"top": 0,
-			"right": 0,
-			"bottom": 0,
-			"left": 0
-		},
-		"font_familly": "GeistMonoNerdFont-Regular",
-		"font_spacing": 1,
-		"scroll_padding": 5,
-		"cursor_ratio": 1,
-		"theme": "Tokyo-night-storm"
-	}
+  "ui": {
+    "padding": {
+      "top": 13,
+      "right": 13,
+      "bottom": 13,
+      "left": 13
+    },
+    "font_familly": "GeistMonoNerdFont-Regular",
+    "font_size": 30,
+    "font_spacing": 1,
+    "scroll_padding": 5,
+    "cursor_ratio": 1,
+    "theme": "ayu-light"
+  }
 }
