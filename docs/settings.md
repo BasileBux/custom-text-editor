@@ -20,11 +20,10 @@ This file structure is copied from the [zed docs](https://zed.dev/docs/configuri
 
 ```toml
 "padding": {
-      "top": 13,
-      "right": 13,
-      ...
-    },
-...
+    "top": 13,
+    "right": 13,
+    ...
+},
 ```
 
 ### Font Family
