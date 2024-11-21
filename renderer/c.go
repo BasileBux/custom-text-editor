@@ -66,7 +66,7 @@ func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramSt
 			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Comment, state, userStyle)
 
 		case 154: // Escape sequence
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Regexp, state, userStyle)
+			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Escape, state, userStyle)
 
 		case 152: // Quotes
 			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.String, state, userStyle)

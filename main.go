@@ -68,8 +68,8 @@ func main() {
 		fmt.Println("Error could not open color theme")
 		return
 	}
-	// userStyle.Font = rl.LoadFontEx("/usr/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
-	userStyle.Font = rl.LoadFontEx("/home/basileb/.local/share/fonts/GeistMono/GeistMonoNerdFont-Regular.otf", 100, nil)
+
+	userStyle.Font = rl.LoadFontEx("GeistMonoNerdFont-Regular.otf", 100, nil)
 
 	rl.SetTextLineSpacing(int(userStyle.FontSpacing))
 	rl.SetTextureFilter(userStyle.Font.Texture, rl.FilterBilinear)

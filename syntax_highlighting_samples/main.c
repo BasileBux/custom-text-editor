@@ -6,27 +6,27 @@
 #define BUFFER_LEN 80
 
 typedef struct {
-    int x, y;
+  int x, y;
 } Vec2;
 
 void smallerThan(void) { printf("SMALLER"); }
 
-int main(int argc, char* argv[]) {
-    
-    Vec2* v;
-    v->x = a;
-    v->y = a;
-    Vec2** c = &v;
-    switch (a) {
-        case 1:
-            break;
-    }
+int main(int argc, char *argv[]) {
 
-    if (!(a >= b) && a <= b || a > b || a == b || a != b) {
-        smallerThan();
-    } else if (a != b) {
-        printf("EQUAL\n");
-    }
+  Vec2 *v;
+  v->x = a;
+  v->y = a;
+  Vec2 **c = &v;
+  switch (a) {
+  case 1:
+    break;
+  }
 
-    return 0;
+  if (!(a >= b) && a <= b || a > b || a == b || a != b) {
+    smallerThan();
+  } else if (a != b) {
+    printf("EQUAL\n");
+  }
+
+  return 0;
 }

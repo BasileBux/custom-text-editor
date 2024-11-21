@@ -1,0 +1,19 @@
+{
+  "syntax": {
+    "tag": "#bb9af7FF",
+    "func": "#7aa2f7FF",
+    "entity": "#7dcfffFF",
+    "string": "#9ece6aFF",
+    "escape": "#7dcfffFF",
+    "keyword": "#bb9af7FF",
+    "comment": "#7982a9C0",
+    "constant": "#ff9e64FF",
+    "operator": "#bb9af7FF"
+  },
+
+  "editor": {
+    "fg": "#c0caf5FF",
+    "bg": "#24283bFF"
+  }
+}
+
