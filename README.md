@@ -21,7 +21,6 @@ To run it, Just execute the program and provide the path to the file you want to
 
 ## TODO
 
-- Implement config file (store it in a struct)
 - Optimize syntax highlighting with caching (good luck)
 - Optimize positions (text, cursor, ...) with caching (calculations are pretty big atp)
 - Ctrl+backspace deletes whole word or whole space
