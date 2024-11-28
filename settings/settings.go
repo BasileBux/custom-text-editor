@@ -7,6 +7,8 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+var VALID_CONFIG_FILES = [3]string{"settings", "user", "kenzan"}
+
 type Cursor struct {
 	Width             int32
 	Ratio             float32 // ratio with the text height
@@ -46,18 +48,18 @@ var Compact WindowStyle = WindowStyle{
 type Settings struct {
 	UI struct {
 		Padding struct {
-			Top    int `json:"top"`
-			Right  int `json:"right"`
-			Bottom int `json:"bottom"`
-			Left   int `json:"left"`
-		} `json:"padding"`
-		FontFamily    string `json:"font_familly"`
-		FontSize      int    `json:"font_size"`
-		FontSpacing   int    `json:"font_spacing"`
-		ScrollPadding int    `json:"scroll_padding"`
-		CursorRatio   int    `json:"cursor_ratio"`
-		Theme         string `json:"theme"`
-	} `json:"ui"`
+			Top    *int `json:"top,omitempty"`
+			Right  *int `json:"right,omitempty"`
+			Bottom *int `json:"bottom,omitempty"`
+			Left   *int `json:"left,omitempty"`
+		} `json:"padding,omitempty"`
+		FontFamily    *string `json:"font_familly,omitempty"`
+		FontSize      *int    `json:"font_size,omitempty"`
+		FontSpacing   *int    `json:"font_spacing,omitempty"`
+		ScrollPadding *int    `json:"scroll_padding,omitempty"`
+		CursorRatio   *int    `json:"cursor_ratio,omitempty"`
+		Theme         *string `json:"theme,omitempty"`
+	} `json:"ui,omitempty"`
 }
 
 func loadSettings(path string) (*Settings, error) {
@@ -74,11 +76,81 @@ func loadSettings(path string) (*Settings, error) {
 	return &settings, nil
 }
 
+func loadUserSettings(path string) (*Settings, error) {
+	var err error
+	for _, p := range VALID_CONFIG_FILES {
+		file := path + "/" + p + ".json"
+		data, err := loadSettings(file)
+		if err == nil {
+			return data, nil
+		}
+	}
+
+	return nil, err
+}
+
 func LoadAllSettings() (*Settings, error) {
-	def, err := loadSettings("default.json")
+	configDir := os.Getenv("XDG_CONFIG_HOME")
+	if configDir == "" {
+		configDir = os.ExpandEnv("$HOME/.config")
+	}
+	configDir += "/kenzan"
+	defaultPath := configDir + "/default.json"
+
+	defaults, err := loadSettings(defaultPath)
 	if err != nil {
 		return nil, err
 	}
 
-	return def, nil
+	user, err := loadUserSettings(configDir)
+	if err != nil {
+		return defaults, nil
+	}
+
+	merged := MergeSettings(defaults, user)
+	return merged, nil
+}
+
+func MergeSettings(defaults *Settings, user *Settings) *Settings {
+	if user == nil {
+		return defaults
+	}
+
+	merged := *defaults // Create a copy of defaults
+
+	// Merge padding settings
+	if user.UI.Padding.Top != nil {
+		merged.UI.Padding.Top = user.UI.Padding.Top
+	}
+	if user.UI.Padding.Right != nil {
+		merged.UI.Padding.Right = user.UI.Padding.Right
+	}
+	if user.UI.Padding.Bottom != nil {
+		merged.UI.Padding.Bottom = user.UI.Padding.Bottom
+	}
+	if user.UI.Padding.Left != nil {
+		merged.UI.Padding.Left = user.UI.Padding.Left
+	}
+
+	// Merge other UI settings
+	if user.UI.FontFamily != nil {
+		merged.UI.FontFamily = user.UI.FontFamily
+	}
+	if user.UI.FontSize != nil {
+		merged.UI.FontSize = user.UI.FontSize
+	}
+	if user.UI.FontSpacing != nil {
+		merged.UI.FontSpacing = user.UI.FontSpacing
+	}
+	if user.UI.ScrollPadding != nil {
+		merged.UI.ScrollPadding = user.UI.ScrollPadding
+	}
+	if user.UI.CursorRatio != nil {
+		merged.UI.CursorRatio = user.UI.CursorRatio
+	}
+	if user.UI.Theme != nil {
+		merged.UI.Theme = user.UI.Theme
+	}
+
+	return &merged
 }
