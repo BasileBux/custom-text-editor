@@ -46,14 +46,11 @@ func removeTrailingSpaces(input string) string {
 }
 
 func calculateOffset(cursor *t.TextRenderCursor, text *string, state *t.ProgramState, style *st.WindowStyle) t.TextRenderCursor {
-
 	textSize := rl.MeasureTextEx(style.Font, *text, style.FontSize, style.FontSpacing)
 
 	if strings.Contains(*text, "\n") {
-
 		// Never render trailing spaces as their offset will transfer on new lines
 		*text = removeTrailingSpaces(*text)
-
 		// Remove last new line to have correct height
 		lastNewline := strings.LastIndex(*text, "\n")
 		begin := (*text)[:lastNewline]
@@ -64,16 +61,11 @@ func calculateOffset(cursor *t.TextRenderCursor, text *string, state *t.ProgramS
 		cursor.Line += textSize.Y + style.FontSpacing
 		cursor.Row = style.PaddingLeft
 	}
-
 	result := *cursor
-
 	cursor.Row += textSize.X + style.FontSpacing
-
 	if cursor.Line > (state.ViewPortSize.Y*style.CharSize.Y + state.Nav.ScrollOffset.Y) {
 		result.Stop = true
-		return result
 	}
-
 	return result
 }
 

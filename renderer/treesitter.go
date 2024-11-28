@@ -9,9 +9,7 @@ import (
 )
 
 func highlight(text *string, color *rl.Color, cursor *t.TextRenderCursor, state *t.ProgramState, style *st.WindowStyle) {
-
 	tmp := calculateOffset(cursor, text, state, style)
-
 	state.Cache.Syntax = append(state.Cache.Syntax, t.SyntaxCache{Text: *text, Color: color, Cursor: tmp})
 }
 

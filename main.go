@@ -14,6 +14,8 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+const FPS int32 = 60
+
 func RedirectLogs() {
 	logFile, err := os.OpenFile("raylib.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -95,7 +97,7 @@ func main() {
 	rl.SetTextLineSpacing(int(userStyle.FontSpacing))
 	rl.SetTextureFilter(userStyle.Font.Texture, rl.FilterBilinear)
 	rl.SetExitKey(0)
-	rl.SetTargetFPS(144)
+	rl.SetTargetFPS(FPS)
 
 	charSize := rl.MeasureTextEx(userStyle.Font, "a", userStyle.FontSize, userStyle.FontSpacing)
 	userStyle.CharSize = charSize
@@ -166,7 +168,16 @@ func main() {
 		textToRender = strings.TrimRight(textToRender, "\n")
 		r.RenderText(state.ActiveLanguage, &textToRender, &state, &userStyle)
 
-		r.DrawCursor(userText, &nav, &userStyle)
+		if state.Update.Cursor || state.Update.Highlight {
+			r.CalculateCursorPos(userText, &nav, &state.Cache, &userStyle)
+		}
+		rl.DrawRectangle(
+			int32(state.Cache.Cursor.X),
+			int32(state.Cache.Cursor.Y),
+			int32(userStyle.Cursor.Width),
+			int32(userStyle.FontSize*userStyle.Cursor.Ratio),
+			userStyle.ColorTheme.Editor.Fg,
+		)
 		state.Update.Reset()
 		rl.EndDrawing()
 

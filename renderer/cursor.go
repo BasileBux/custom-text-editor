@@ -6,7 +6,7 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func DrawCursor(userText []string, nav *t.NavigationData, userStyle *st.WindowStyle) {
+func CalculateCursorPos(userText []string, nav *t.NavigationData, cache *t.Cache, userStyle *st.WindowStyle) {
 	// If we're on an empty line or newline, place cursor at the start
 	if len(userText[nav.SelectedLine]) <= 0 || userText[nav.SelectedLine] == "\n" {
 		cursorVerticalPos := int32(userStyle.PaddingTop) +
@@ -14,13 +14,8 @@ func DrawCursor(userText []string, nav *t.NavigationData, userStyle *st.WindowSt
 			int32(nav.SelectedLine*int(userStyle.FontSpacing)) -
 			int32(nav.ScrollOffset.Y*float32(userStyle.FontSize+userStyle.FontSpacing))
 
-		rl.DrawRectangle(
-			int32(userStyle.PaddingLeft),
-			cursorVerticalPos,
-			int32(userStyle.Cursor.Width),
-			int32(userStyle.FontSize*userStyle.Cursor.Ratio),
-			userStyle.ColorTheme.Editor.Fg,
-		)
+		cache.Cursor.X = int(userStyle.PaddingLeft)
+		cache.Cursor.Y = int(cursorVerticalPos)
 		return
 	}
 
@@ -45,12 +40,6 @@ func DrawCursor(userText []string, nav *t.NavigationData, userStyle *st.WindowSt
 		int32(nav.SelectedLine*int(userStyle.FontSpacing)) -
 		int32(nav.ScrollOffset.Y*float32(userStyle.FontSize+userStyle.FontSpacing))
 
-	// Draw the cursor
-	rl.DrawRectangle(
-		cursorHorizontalPos,
-		cursorVerticalPos,
-		int32(userStyle.Cursor.Width),
-		int32(userStyle.FontSize*userStyle.Cursor.Ratio),
-		userStyle.ColorTheme.Editor.Fg,
-	)
+	cache.Cursor.X = int(cursorHorizontalPos)
+	cache.Cursor.Y = int(cursorVerticalPos)
 }

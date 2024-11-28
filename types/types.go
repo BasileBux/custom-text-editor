@@ -54,6 +54,7 @@ type ProgramState struct {
 
 type Cache struct {
 	Syntax []SyntaxCache
+	Cursor Vec2
 }
 
 type SyntaxCache struct {
