@@ -8,10 +8,19 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type TextRenderCursor struct {
-	line         float32 // pixels
-	row          float32 // pixels
-	scrollOffset rl.Vector2
+func renderHighlight(state *t.ProgramState, style *st.WindowStyle) {
+	for _, c := range state.Cache.Syntax {
+		scrollHeight := (state.Nav.ScrollOffset.Y * style.CharSize.Y) + (state.Nav.ScrollOffset.Y * style.FontSpacing)
+		scrollWidth := (state.Nav.ScrollOffset.X * style.CharSize.X) + (state.Nav.ScrollOffset.X * style.FontSpacing)
+		textPos := rl.NewVector2(c.Cursor.Row-scrollWidth, c.Cursor.Line-scrollHeight)
+
+		if textPos.Y > 0 || textPos.Y < -(style.CharSize.Y/2) { // small optimization
+			rl.DrawTextEx(style.Font, c.Text, textPos, style.FontSize, 1, *c.Color)
+		}
+		if c.Cursor.Stop {
+			return
+		}
+	}
 }
 
 // Trailing spaces are spaces blocks followed by a '\n'
@@ -36,7 +45,7 @@ func removeTrailingSpaces(input string) string {
 	return string(result)
 }
 
-func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, state *t.ProgramState, style *st.WindowStyle) bool {
+func calculateOffset(cursor *t.TextRenderCursor, text *string, state *t.ProgramState, style *st.WindowStyle) t.TextRenderCursor {
 
 	textSize := rl.MeasureTextEx(style.Font, *text, style.FontSize, style.FontSpacing)
 
@@ -52,24 +61,20 @@ func (t *TextRenderCursor) DrawTextPart(text *string, color rl.Color, state *t.P
 		*text = begin + end
 
 		textSize = rl.MeasureTextEx(style.Font, *text, style.FontSize, style.FontSpacing)
-		t.line += textSize.Y + style.FontSpacing
-		t.row = style.PaddingLeft
+		cursor.Line += textSize.Y + style.FontSpacing
+		cursor.Row = style.PaddingLeft
 	}
 
-	scrollHeight := (t.scrollOffset.Y * style.CharSize.Y) + (t.scrollOffset.Y * style.FontSpacing)
-	scrollWidth := (t.scrollOffset.X * style.CharSize.X) + (t.scrollOffset.X * style.FontSpacing)
-	textPos := rl.NewVector2(t.row-scrollWidth, t.line-scrollHeight)
+	result := *cursor
 
-	if textPos.Y > 0 || textPos.Y < -(textSize.Y/2) { // small optimization
-		rl.DrawTextEx(style.Font, *text, textPos, style.FontSize, 1, color)
-	}
-	t.row += textSize.X + style.FontSpacing
+	cursor.Row += textSize.X + style.FontSpacing
 
-	if t.line > (state.ViewPortSize.Y*style.CharSize.Y + t.scrollOffset.Y) {
-		return true
+	if cursor.Line > (state.ViewPortSize.Y*style.CharSize.Y + state.Nav.ScrollOffset.Y) {
+		result.Stop = true
+		return result
 	}
 
-	return false
+	return result
 }
 
 func noSyntaxHighlight(text *string, scrollOffset *rl.Vector2, style *st.WindowStyle) {

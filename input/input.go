@@ -29,7 +29,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 		if char >= 32 && char <= 126 {
 			state.SaveState = false
 			state.ForceQuit = false
-			state.RenderUpdate = true
+			state.Update.Highlight = true
 			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 			}
@@ -63,7 +63,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 
 	// Backspace
 	if rl.IsKeyPressedRepeat(rl.KeyBackspace) || rl.IsKeyPressed(rl.KeyBackspace) {
-		state.RenderUpdate = true
+		state.Update.Highlight = true
 		state.SaveState = false
 		state.ForceQuit = false
 		backSpace(text, state, style)
@@ -74,7 +74,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 		if state.ForceQuit {
 			return true
 		}
-		state.RenderUpdate = true
+		state.Update.Highlight = true
 		state.SaveState = false
 		newText := make([]string, len(*text)+1)
 		copy(newText, (*text)[:nav.SelectedLine+1])
@@ -98,7 +98,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 
 	// Tab
 	if rl.IsKeyPressed(rl.KeyTab) {
-		state.RenderUpdate = true
+		state.Update.Highlight = true
 		state.SaveState = false
 		state.ForceQuit = false
 		begin := (*text)[nav.SelectedLine][:nav.SelectedRow]
@@ -111,28 +111,28 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 
 	// Left
 	if rl.IsKeyPressed(rl.KeyLeft) || rl.IsKeyPressedRepeat(rl.KeyLeft) {
-		state.RenderUpdate = true
+		state.Update.Cursor = true
 		state.ForceQuit = false
 		arrowLeft(text, state, style)
 	}
 
 	// Right
 	if rl.IsKeyPressed(rl.KeyRight) || rl.IsKeyPressedRepeat(rl.KeyRight) {
-		state.RenderUpdate = true
+		state.Update.Cursor = true
 		state.ForceQuit = false
 		arrowRight(text, state, style)
 	}
 
 	// Up
 	if (rl.IsKeyPressed(rl.KeyUp) || rl.IsKeyPressedRepeat(rl.KeyUp)) && nav.SelectedLine >= 1 {
-		state.RenderUpdate = true
+		state.Update.Cursor = true
 		state.ForceQuit = false
-		arrowUp(text, nav, style)
+		arrowUp(text, state, style)
 	}
 
 	// Down
 	if (rl.IsKeyPressed(rl.KeyDown) || rl.IsKeyPressedRepeat(rl.KeyDown)) && nav.SelectedLine < len(*text)-1 {
-		state.RenderUpdate = true
+		state.Update.Cursor = true
 		state.ForceQuit = false
 		arrowDown(text, state, style)
 	}

@@ -29,14 +29,41 @@ type Vec2 struct {
 	Y int
 }
 
+type Update struct {
+	Cursor    bool
+	Highlight bool
+}
+
+func (u *Update) Reset() {
+	u.Cursor = false
+	u.Highlight = false
+}
+
 type ProgramState struct {
 	Nav            *NavigationData
 	AcitveFile     string
-	RenderUpdate   bool
+	Update         Update
 	ActiveLanguage Language
 	SavedFile      []string
 	SaveState      bool
 	ForceQuit      bool
 	ViewPortSize   rl.Vector2
 	ViewPortSteps  Vec2
+	Cache          Cache
+}
+
+type Cache struct {
+	Syntax []SyntaxCache
+}
+
+type SyntaxCache struct {
+	Text   string
+	Color  *rl.Color
+	Cursor TextRenderCursor
+}
+
+type TextRenderCursor struct {
+	Line float32 // pixels
+	Row  float32 // pixels
+	Stop bool
 }

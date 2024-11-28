@@ -22,7 +22,7 @@ func backSpace(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 		nav.SelectedRow = nav.AbsoluteSelectedRow
 
 		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
-		r.ScrollUp(1, nav, style)
+		r.ScrollUp(1, state, style)
 		return
 	}
 
@@ -43,7 +43,7 @@ func backSpace(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 			nav.AbsoluteSelectedRow--
 			nav.SelectedRow = nav.AbsoluteSelectedRow
 		}
-		r.ScrollLeft(1, nav, style)
+		r.ScrollLeft(1, state, style)
 
 		// inside and erasing last char
 	} else if nav.SelectedLine > 0 {
@@ -61,6 +61,6 @@ func backSpace(text *[]string, state *t.ProgramState, style *st.WindowStyle) {
 
 		// Scroll one up and go at end of line
 		r.ResetHorizontalScrollRight(float32(nav.AbsoluteSelectedRow), state, style)
-		r.ScrollUp(1, nav, style)
+		r.ScrollUp(1, state, style)
 	}
 }

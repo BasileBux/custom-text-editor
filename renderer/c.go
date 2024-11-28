@@ -8,18 +8,20 @@ import (
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
 )
 
-func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramState, userStyle *st.WindowStyle) {
+func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramState, style *st.WindowStyle) {
 	cursor := node.Walk()
 	defer cursor.Close()
 
-	lastFinish := uint(0)
-	textRenderCursor := &TextRenderCursor{
-		line:         userStyle.PaddingTop,
-		row:          userStyle.PaddingLeft,
-		scrollOffset: state.Nav.ScrollOffset,
+	// Reset slice
+	state.Cache.Syntax = state.Cache.Syntax[:0]
+
+	textRenderCursor := &t.TextRenderCursor{
+		Line: style.PaddingTop,
+		Row:  style.PaddingLeft,
+		Stop: false,
 	}
 
-	terminateRender := false
+	lastFinish := uint(0)
 
 	for i := uint32(0); !(cursor.Node().KindId() == 161 && i > 1); i++ {
 		cursor.GotoDescendant(i)
@@ -27,7 +29,7 @@ func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramSt
 
 		if start > lastFinish {
 			stringText := string(code[lastFinish:start])
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Editor.Fg, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Editor.Fg, textRenderCursor, state, style)
 		}
 
 		text := code[start:finish]
@@ -35,110 +37,107 @@ func syntaxHighlightingC(node *tree_sitter.Node, code []byte, state *t.ProgramSt
 
 		switch cursor.Node().KindId() {
 		case 93: // Primitive type
-			textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Tag, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Tag, textRenderCursor, state, style)
 
 		case 1, 362: // Identifier
 			if cursor.Node().Parent().KindId() == 230 { // Function name
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Func, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.Func, textRenderCursor, state, style)
 			} else if cursor.Node().Parent().KindId() == 165 { // Defined word
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Func, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.Func, textRenderCursor, state, style)
 			} else if cursor.Node().Parent().KindId() == 299 { // Called function -> can also be 266
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Func, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.Func, textRenderCursor, state, style)
 			} else if cursor.Node().Parent().KindId() == 199 {
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Tag, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.Tag, textRenderCursor, state, style)
 			} else if cursor.Node().Parent().KindId() == 198 {
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Tag, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.Tag, textRenderCursor, state, style)
 			} else { // variable name
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Editor.Fg, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Editor.Fg, textRenderCursor, state, style)
 			}
 
 		case 205, 44, 96, 106, 98, 99, 100, 102, 101, 103, 104, 105, 107, 108, 109, 127: // Keywords
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Keyword, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Keyword, textRenderCursor, state, style)
 
 		case 146, 147, 153: // String content
 			if cursor.Node().Parent().KindId() == 164 { // include string (local lib)
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.String, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.String, textRenderCursor, state, style)
 			} else {
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.String, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.String, textRenderCursor, state, style)
 			}
 
 		case 7, 95: // Comma, column
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Comment, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Comment, textRenderCursor, state, style)
 
 		case 154: // Escape sequence
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Escape, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Escape, textRenderCursor, state, style)
 
 		case 152: // Quotes
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.String, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.String, textRenderCursor, state, style)
 
 		case 5, 8: // Parenthesis
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Entity, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Entity, textRenderCursor, state, style)
 
 		case 64, 65: // Curly brackets
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Entity, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Entity, textRenderCursor, state, style)
 
 		case 70, 72: // Angle brackets
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Entity, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Entity, textRenderCursor, state, style)
 
 		case 26, 33: // Pointers operators
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Operator, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Operator, textRenderCursor, state, style)
 
 		case 140: // Pointers arrow (struct->item)
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Comment, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Comment, textRenderCursor, state, style)
 
 		case 42: // ;
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Comment, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Comment, textRenderCursor, state, style)
 
 		case 24, 25, 27, 28, 73, 118, 119, 126, 125: // Operators (arithmetic)
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Operator, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Operator, textRenderCursor, state, style)
 
 		case 31, 32: // Operators bitwise
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Operator, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Operator, textRenderCursor, state, style)
 
 		case 22, 35, 36, 37, 38, 39: // Operators (comparison)
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Operator, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Operator, textRenderCursor, state, style)
 
 		case 30, 29: // and, or
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Entity, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Entity, textRenderCursor, state, style)
 
 		case 141: // number literals
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Constant, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Constant, textRenderCursor, state, style)
 
 		case 156, 157: // true / false constant
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Constant, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Constant, textRenderCursor, state, style)
 
 		case 2, 4: // include, define
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Keyword, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Keyword, textRenderCursor, state, style)
 
 		case 155: // system lib string
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.String, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.String, textRenderCursor, state, style)
 
 		case 18: // preproc_arg = defined keyword
-			terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Constant, state, userStyle)
+			highlight(&stringText, &style.ColorTheme.Syntax.Constant, textRenderCursor, state, style)
 
 		case 160: // !comments -> block comments can be on multiple lines. This is really bad
 			if stringText[1] == '*' {
 				lines := strings.Split(stringText, "\n")
-				for i, s := range lines {
-					if i != 0 {
+				for j, s := range lines {
+					if j != 0 {
 						s += "\n"
 					}
-					terminateRender = textRenderCursor.DrawTextPart(&s, userStyle.ColorTheme.Syntax.Comment, state, userStyle)
+					highlight(&s, &style.ColorTheme.Syntax.Comment, textRenderCursor, state, style)
 				}
 			} else {
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Syntax.Comment, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Syntax.Comment, textRenderCursor, state, style)
 			}
 
 		default: // Other elements which are leaf
 			if cursor.Node().ChildCount() == 0 {
 				stringText := string(text)
-				terminateRender = textRenderCursor.DrawTextPart(&stringText, userStyle.ColorTheme.Editor.Fg, state, userStyle)
+				highlight(&stringText, &style.ColorTheme.Editor.Fg, textRenderCursor, state, style)
 			}
 		}
 
 		lastFinish = finish
-		if terminateRender {
-			break
-		}
 	}
 }

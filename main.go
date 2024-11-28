@@ -112,7 +112,7 @@ func main() {
 
 	state := t.ProgramState{
 		Nav:            &nav,
-		RenderUpdate:   true,
+		Update:         t.Update{Cursor: true, Highlight: true},
 		AcitveFile:     filename,
 		ActiveLanguage: fileLanguage,
 		SavedFile:      make([]string, len(userText)),
@@ -167,6 +167,7 @@ func main() {
 		r.RenderText(state.ActiveLanguage, &textToRender, &state, &userStyle)
 
 		r.DrawCursor(userText, &nav, &userStyle)
+		state.Update.Reset()
 		rl.EndDrawing()
 
 	}
