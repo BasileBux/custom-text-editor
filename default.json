@@ -12,5 +12,8 @@
     "scroll_padding": 5,
     "cursor_ratio": 1,
     "theme": "ayu-light"
+  },
+  "system": {
+    "high_dpi": true
   }
 }

@@ -53,7 +53,16 @@ func main() {
 
 	RedirectLogs()
 
+	settings, err := st.LoadAllSettings()
+	if err != nil {
+		panic("Settings couldn't load")
+	}
+
+	// Config flags
 	rl.SetConfigFlags(rl.FlagWindowResizable)
+	if *settings.System.HighDpi {
+		rl.SetConfigFlags(rl.FlagWindowHighdpi)
+	}
 
 	rl.InitWindow(800, 800, "kenzan")
 	if !rl.IsWindowReady() {
@@ -61,17 +70,12 @@ func main() {
 	}
 	defer rl.CloseWindow()
 
-	settings, err := st.LoadAllSettings()
-	if err != nil {
-		panic("Settings couldn't load")
-	}
-
 	userStyle := st.WindowStyle{
 		PaddingTop:    float32(*settings.UI.Padding.Top),
 		PaddingRight:  float32(*settings.UI.Padding.Right),
 		PaddingBottom: float32(*settings.UI.Padding.Bottom),
 		PaddingLeft:   float32(*settings.UI.Padding.Left),
-		Font:          rl.LoadFontEx("GeistMonoNerdFont-Regular.otf", 100, nil),
+		Font:          rl.LoadFontEx(*settings.UI.FontFamily, 100, nil),
 		FontSize:      float32(*settings.UI.FontSize),
 		FontSpacing:   float32(*settings.UI.FontSpacing),
 		Cursor: st.Cursor{

@@ -5,7 +5,7 @@ You can access the defaults in ~/.config/kenzan/default.json to look up the glob
 
 This file structure is copied from the [zed docs](https://zed.dev/docs/configuring-zed)
 
-## Ui elements
+## Ui
 
 ### Padding
 
@@ -85,3 +85,16 @@ positive `integer` values (can be 0)
 #### Options
 
 `string` values. Theme name which corresponds to the name of the theme file in ~/.config/kenzan/themes/
+
+## System
+
+### High dpi
+
+- Description: Enable high dpi mode
+- Setting: `high_dpi`
+- Default: true
+
+#### Options
+
+`boolean` values. True is activated. 
+

@@ -60,6 +60,9 @@ type Settings struct {
 		CursorRatio   *int    `json:"cursor_ratio,omitempty"`
 		Theme         *string `json:"theme,omitempty"`
 	} `json:"ui,omitempty"`
+	System struct {
+		HighDpi *bool `json:"high_dpi,omitempty"`
+	} `json:"system,omitempty"`
 }
 
 func loadSettings(path string) (*Settings, error) {
@@ -150,6 +153,11 @@ func MergeSettings(defaults *Settings, user *Settings) *Settings {
 	}
 	if user.UI.Theme != nil {
 		merged.UI.Theme = user.UI.Theme
+	}
+
+	// Merge system settings
+	if user.System.HighDpi != nil {
+		merged.System.HighDpi = user.System.HighDpi
 	}
 
 	return &merged
