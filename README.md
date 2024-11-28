@@ -21,17 +21,14 @@ To run it, Just execute the program and provide the path to the file you want to
 
 ## TODO
 
-- Optimize syntax highlighting with caching (good luck)
-- Optimize positions (text, cursor, ...) with caching (calculations are pretty big atp)
-- Ctrl+backspace deletes whole word or whole space
-- Delete key normal behavior + ctrl+del
+- Lines numbers -> absolute / relative
 - Change fonts with env vars for font folders (OS dependent good luck)
+- `Delete key` normal behavior
 - Change between indentation with tabs and spaces + modify sizes
 - Text Selection
 - Copy / Paste
 - Mouse support (click, select, scroll)
 - Change cursor shape
-- Better theme files. Remove useless things
 - ...
 
 ## Issues
