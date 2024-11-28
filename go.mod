@@ -1,4 +1,4 @@
-module github.com/basileb/custom_text_editor
+module github.com/basileb/kenzan
 
 go 1.23
 

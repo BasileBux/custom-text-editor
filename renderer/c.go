@@ -3,8 +3,8 @@ package renderer
 import (
 	"strings"
 
-	st "github.com/basileb/custom_text_editor/settings"
-	t "github.com/basileb/custom_text_editor/types"
+	st "github.com/basileb/kenzan/settings"
+	t "github.com/basileb/kenzan/types"
 	tree_sitter "github.com/tree-sitter/go-tree-sitter"
 )
 

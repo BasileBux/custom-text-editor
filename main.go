@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	f "github.com/basileb/custom_text_editor/files"
-	"github.com/basileb/custom_text_editor/input"
-	r "github.com/basileb/custom_text_editor/renderer"
-	st "github.com/basileb/custom_text_editor/settings"
-	t "github.com/basileb/custom_text_editor/types"
+	f "github.com/basileb/kenzan/files"
+	"github.com/basileb/kenzan/input"
+	r "github.com/basileb/kenzan/renderer"
+	st "github.com/basileb/kenzan/settings"
+	t "github.com/basileb/kenzan/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 

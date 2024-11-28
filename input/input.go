@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	f "github.com/basileb/custom_text_editor/files"
-	r "github.com/basileb/custom_text_editor/renderer"
-	st "github.com/basileb/custom_text_editor/settings"
-	t "github.com/basileb/custom_text_editor/types"
+	f "github.com/basileb/kenzan/files"
+	r "github.com/basileb/kenzan/renderer"
+	st "github.com/basileb/kenzan/settings"
+	t "github.com/basileb/kenzan/types"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
