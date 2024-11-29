@@ -22,4 +22,12 @@ transparent := rl.Color{
 rl.ClearBackground(transparent)
 ```
 
+## Shaders 
 
+Needs 1 or 2 .fs glsl shader
+
+```go
+bloom := rl.LoadShader("", "shaders/bloom.fs")
+rl.BeginShaderMode(bloom)
+rl.EndShaderMode()
+```
