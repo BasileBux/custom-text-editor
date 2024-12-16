@@ -114,7 +114,7 @@ positive `integer` values (can be 0)
 #### Padding left
 
 - Description: Space from left window border to line numbers
-- Setting: `padding`
+- Setting: `padding_left`
 - Default: 24
 
 ##### Options
@@ -124,14 +124,22 @@ Positive `integer` values. If the value is too small or too big, it will just lo
 #### Padding right
 
 - Description: Space from line numbers to text
-- Setting: `padding`
+- Setting: `padding_right`
 - Default: 8
 
 ##### Options
 
 Positive `integer` values. If the value is too small or too big, it will just look ugly
 
+#### Line width
 
+- Description: Width of the line separating line numbers from text
+- Setting: `line_width`
+- Default: 2
+
+##### Options
+
+Positive `integer` values. Set to 0 to remove line
 
 ## System
 

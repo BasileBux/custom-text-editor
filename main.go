@@ -86,6 +86,11 @@ func main() {
 			HorizontalPadding: int32(*settings.UI.ScrollPadding),
 			VerticalPadding:   int32(*settings.UI.ScrollPadding),
 		},
+		LineNumbers: st.LineNumbers{
+			PaddingLeft:  *settings.UI.LineNumbers.PaddingLeft,
+			PaddingRight: *settings.UI.LineNumbers.PaddingRight,
+			LineWidth:    *settings.UI.LineNumbers.LineWidth,
+		},
 	}
 
 	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(settings.UI.Theme)
@@ -188,13 +193,11 @@ func main() {
 		)
 
 		if state.Update.Cursor {
-			r.CalculateLineNbPositions(*settings.UI.LineNumbers.Relative, *settings.UI.LineNumbers.PaddingLeft,
-				*settings.UI.LineNumbers.PaddingRight, &state, &userStyle)
+			r.CalculateLineNbPositions(*settings.UI.LineNumbers.Relative, &state, &userStyle)
 		}
 
 		if *settings.UI.LineNumbers.Show {
-			r.RenderLineNumbers(*settings.UI.LineNumbers.PaddingLeft,
-				*settings.UI.LineNumbers.PaddingRight, &state, &userStyle)
+			r.RenderLineNumbers(&state, &userStyle)
 		}
 
 		state.Update.Reset()

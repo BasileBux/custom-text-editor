@@ -6,33 +6,28 @@ import (
 	st "github.com/basileb/kenzan/settings"
 	t "github.com/basileb/kenzan/types"
 
-	// u "github.com/basileb/kenzan/utils"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-// TODO:
-// - Make line width an setting (can be 0)
-
-func RenderLineNumbers(paddingL int, paddingR int, state *t.ProgramState, style *st.WindowStyle) {
-	drawLineNumbers(paddingL, paddingR, state, style)
-}
-
-func drawLineNumbers(paddingL int, paddingR int, state *t.ProgramState, style *st.WindowStyle) {
-	width := state.Cache.LineNumbers.Width + int32(paddingL) + int32(paddingR)
+func RenderLineNumbers(state *t.ProgramState, style *st.WindowStyle) {
+	width := state.Cache.LineNumbers.Width +
+		int32(style.LineNumbers.PaddingLeft) + int32(style.LineNumbers.PaddingRight)
 	rl.DrawRectangle(0, 0, width, int32(state.ViewPortSize.Y), style.ColorTheme.Editor.Bg)
 	for i, pos := range state.Cache.LineNumbers.Positions {
 		rl.DrawTextEx(style.Font, state.Cache.LineNumbers.Numbers[i], pos,
 			style.FontSize, style.FontSpacing, state.Cache.LineNumbers.Colors[i])
 	}
-	// 2 == line width
-	rl.DrawRectangle(width, 0, 2, int32(state.ViewPortSize.Y), style.ColorTheme.Editor.Gutter.Normal)
+	rl.DrawRectangle(width, 0, int32(style.LineNumbers.LineWidth),
+		int32(state.ViewPortSize.Y), style.ColorTheme.Editor.Gutter.Normal)
 }
 
-func CalculateLineNbPositions(relative bool, paddingL int, paddingR int, state *t.ProgramState, style *st.WindowStyle) {
+func CalculateLineNbPositions(relative bool, state *t.ProgramState, style *st.WindowStyle) {
 	if !relative {
-		calculateAbsLineNbPositions(paddingL, paddingR, state, style)
+		calculateAbsLineNbPositions(style.LineNumbers.PaddingLeft,
+			style.LineNumbers.PaddingRight, state, style)
 	} else {
-		calculateRelLineNbPositions(paddingL, paddingR, state, style)
+		calculateRelLineNbPositions(style.LineNumbers.PaddingLeft,
+			style.LineNumbers.PaddingRight, state, style)
 	}
 }
 

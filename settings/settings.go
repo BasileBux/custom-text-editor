@@ -16,6 +16,12 @@ type Cursor struct {
 	VerticalPadding   int32
 }
 
+type LineNumbers struct {
+	PaddingLeft  int
+	PaddingRight int
+	LineWidth    int
+}
+
 type WindowStyle struct {
 	PaddingTop    float32
 	PaddingRight  float32
@@ -27,6 +33,7 @@ type WindowStyle struct {
 	Cursor        Cursor
 	ColorTheme    Theme
 	CharSize      rl.Vector2
+	LineNumbers   LineNumbers
 }
 
 type Settings struct {
@@ -49,6 +56,7 @@ type Settings struct {
 			Relative     *bool `json:"relative,omitempty"`
 			PaddingLeft  *int  `json:"padding_left,omitempty"`
 			PaddingRight *int  `json:"padding_right,omitempty"`
+			LineWidth    *int  `json:"line_width,omitempty"`
 		} `json:"line_numbers,omitempty"`
 	} `json:"ui,omitempty"`
 	System struct {
@@ -158,6 +166,9 @@ func MergeSettings(defaults *Settings, user *Settings) *Settings {
 	}
 	if user.UI.LineNumbers.PaddingRight != nil {
 		merged.UI.LineNumbers.PaddingRight = user.UI.LineNumbers.PaddingRight
+	}
+	if user.UI.LineNumbers.LineWidth != nil {
+		merged.UI.LineNumbers.LineWidth = user.UI.LineNumbers.LineWidth
 	}
 
 	// Merge system settings
