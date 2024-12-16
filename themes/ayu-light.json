@@ -10,10 +10,13 @@
     "constant": "#A37ACDFF",
     "operator": "#ED9366FF"
   },
-
   "editor": {
     "fg": "#5C6166FF",
     "bg": "#FCFCFCFF",
-    "highlight": "#FA8D3EFF"
+    "highlight": "#FA8D3EFF",
+    "gutter": {
+      "active": "#8A9199CC",
+      "normal": "#8A919966"
+    }
   }
 }

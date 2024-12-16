@@ -10,10 +10,8 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-/*
-Modifications needed:
-	- Implement relative line numbers
-*/
+// TODO:
+// - Make line width an setting (can be 0)
 
 func RenderLineNumbers(paddingL int, paddingR int, state *t.ProgramState, style *st.WindowStyle) {
 	drawLineNumbers(paddingL, paddingR, state, style)
@@ -26,8 +24,8 @@ func drawLineNumbers(paddingL int, paddingR int, state *t.ProgramState, style *s
 		rl.DrawTextEx(style.Font, state.Cache.LineNumbers.Numbers[i], pos,
 			style.FontSize, style.FontSpacing, state.Cache.LineNumbers.Colors[i])
 	}
-	// rl.DrawLine(width, 0, width, int32(state.ViewPortSize.Y), style.ColorTheme.Syntax.Comment)
-	rl.DrawRectangle(width, 0, 2, int32(state.ViewPortSize.Y), style.ColorTheme.Syntax.Comment)
+	// 2 == line width
+	rl.DrawRectangle(width, 0, 2, int32(state.ViewPortSize.Y), style.ColorTheme.Editor.Gutter.Normal)
 }
 
 func CalculateLineNbPositions(relative bool, paddingL int, paddingR int, state *t.ProgramState, style *st.WindowStyle) {
@@ -63,9 +61,9 @@ func calculateAbsLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 		}
 		state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
 
-		currentColor := style.ColorTheme.Syntax.Comment
+		currentColor := style.ColorTheme.Editor.Gutter.Normal
 		if i+int(state.Nav.ScrollOffset.Y)-offset == state.Nav.SelectedLine {
-			currentColor = style.ColorTheme.Editor.Highlight
+			currentColor = style.ColorTheme.Editor.Gutter.Active
 		}
 		state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
 
@@ -104,7 +102,7 @@ func calculateRelLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 			Y: Ypos,
 		}
 		state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
-		currentColor := style.ColorTheme.Syntax.Comment
+		currentColor := style.ColorTheme.Editor.Gutter.Normal
 		state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
 		state.Cache.LineNumbers.Numbers = append(state.Cache.LineNumbers.Numbers, lineNb)
 		Ypos += nbSize.Y + style.FontSpacing
@@ -118,7 +116,7 @@ func calculateRelLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 		Y: Ypos,
 	}
 	state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
-	currentColor := style.ColorTheme.Editor.Highlight
+	currentColor := style.ColorTheme.Editor.Gutter.Active
 	state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
 	state.Cache.LineNumbers.Numbers = append(state.Cache.LineNumbers.Numbers, lineNb)
 	Ypos += nbSize.Y + style.FontSpacing
@@ -132,7 +130,7 @@ func calculateRelLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 			Y: Ypos,
 		}
 		state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
-		currentColor := style.ColorTheme.Syntax.Comment
+		currentColor := style.ColorTheme.Editor.Gutter.Normal
 		state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
 		state.Cache.LineNumbers.Numbers = append(state.Cache.LineNumbers.Numbers, lineNb)
 		Ypos += nbSize.Y + style.FontSpacing
