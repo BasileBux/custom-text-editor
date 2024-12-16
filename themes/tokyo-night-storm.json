@@ -15,8 +15,8 @@
     "fg": "#c0caf5FF",
     "bg": "#24283bFF",
     "gutter": {
-      "active": "#3d547aCC",
-      "normal": "#3d547a66"
+      "active": "#737aa2FF",
+      "normal": "#3b4261FF"
     }
   }
 }
