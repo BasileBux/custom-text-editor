@@ -121,6 +121,16 @@ positive `integer` values (can be 0)
 
 Positive `integer` values. If the value is too small it will just look ugly
 
+#### Padding
+
+- Description: Space from left window border to line numbers
+- Setting: `padding`
+- Default: 3
+
+##### Options
+
+Positive `integer` values. If the value is too small or too big, it will just look ugly
+
 ## System
 
 ### High dpi

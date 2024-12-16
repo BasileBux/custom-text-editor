@@ -29,22 +29,6 @@ type WindowStyle struct {
 	CharSize      rl.Vector2
 }
 
-var Compact WindowStyle = WindowStyle{
-	PaddingTop:    13.0,
-	PaddingRight:  13.0,
-	PaddingBottom: 13.0,
-	PaddingLeft:   13.0,
-	Font:          rl.Font{},
-	FontSize:      30,
-	FontSpacing:   1,
-	Cursor: Cursor{
-		Width:             1,
-		Ratio:             1,
-		HorizontalPadding: 5,
-		VerticalPadding:   5,
-	},
-}
-
 type Settings struct {
 	UI struct {
 		Padding struct {
@@ -59,10 +43,12 @@ type Settings struct {
 		ScrollPadding *int    `json:"scroll_padding,omitempty"`
 		CursorRatio   *int    `json:"cursor_ratio,omitempty"`
 		Theme         *string `json:"theme,omitempty"`
-		LineNumbers   struct {
+
+		LineNumbers struct {
 			Show     *bool `json:"show,omitempty"`
 			Relative *bool `json:"relative,omitempty"`
 			Width    *int  `json:"width,omitempty"`
+			Padding  *int  `json:"padding,omitempty"`
 		} `json:"line_numbers,omitempty"`
 	} `json:"ui,omitempty"`
 	System struct {
@@ -79,6 +65,11 @@ func loadSettings(path string) (*Settings, error) {
 	var settings Settings
 	if err := json.Unmarshal(data, &settings); err != nil {
 		return nil, err
+	}
+
+	// Remove line number padding if show = false
+	if !*settings.UI.LineNumbers.Show {
+		*settings.UI.LineNumbers.Width = 0
 	}
 
 	return &settings, nil

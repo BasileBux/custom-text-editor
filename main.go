@@ -88,6 +88,8 @@ func main() {
 		},
 	}
 
+	userStyle.PaddingLeft += float32(*settings.UI.LineNumbers.Width)
+
 	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(settings.UI.Theme)
 	if err != nil {
 		fmt.Println("Error could not open color theme")
@@ -178,6 +180,12 @@ func main() {
 			int32(userStyle.FontSize*userStyle.Cursor.Ratio),
 			userStyle.ColorTheme.Editor.Fg,
 		)
+
+		if *settings.UI.LineNumbers.Show {
+			r.RenderLineNumbers(*settings.UI.LineNumbers.Relative, *settings.UI.LineNumbers.Width,
+				*settings.UI.LineNumbers.Padding, &state, &userStyle)
+		}
+
 		state.Update.Reset()
 		rl.EndDrawing()
 
