@@ -26,6 +26,7 @@ To run it, Just execute the program and provide the path to the file you want to
 
 - Lines numbers -> absolute / relative
 - Change fonts with env vars for font folders (OS dependent good luck)
+- Highlight current line (setting)
 - `Delete key` normal behavior
 - Change between indentation with tabs and spaces + modify sizes
 - Text Selection
