@@ -115,7 +115,7 @@ positive `integer` values (can be 0)
 
 - Description: Space from left window border to line numbers
 - Setting: `padding`
-- Default: 10
+- Default: 24
 
 ##### Options
 
