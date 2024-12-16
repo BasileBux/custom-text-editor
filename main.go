@@ -173,6 +173,11 @@ func main() {
 			state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
 		}
 
+		if *settings.UI.LineHighlight {
+			rl.DrawRectangle(0, int32(state.Cache.Cursor.Y), int32(state.ViewPortSize.X),
+				int32(userStyle.CharSize.Y), userStyle.ColorTheme.Editor.Highlight)
+		}
+
 		var textToRender string
 		for _, l := range userText {
 			textToRender += l

@@ -17,6 +17,7 @@
     "gutter": {
       "active": "#737aa2FF",
       "normal": "#3b4261FF"
-    }
+    },
+    "highlight": "#292e42FF"
   }
 }

@@ -141,6 +141,16 @@ Positive `integer` values. If the value is too small or too big, it will just lo
 
 Positive `integer` values. Set to 0 to remove line
 
+### Line highlight
+
+- Description: Toggle highlight on current line
+- Setting: `line_highlight`
+- Default: true
+
+##### Options
+
+`boolean`
+
 ## System
 
 ### High dpi

@@ -44,7 +44,7 @@ type Settings struct {
 			Bottom *int `json:"bottom,omitempty"`
 			Left   *int `json:"left,omitempty"`
 		} `json:"padding,omitempty"`
-		FontFamily    *string `json:"font_familly,omitempty"`
+		FontFamily    *string `json:"font_family,omitempty"`
 		FontSize      *int    `json:"font_size,omitempty"`
 		FontSpacing   *int    `json:"font_spacing,omitempty"`
 		ScrollPadding *int    `json:"scroll_padding,omitempty"`
@@ -58,6 +58,8 @@ type Settings struct {
 			PaddingRight *int  `json:"padding_right,omitempty"`
 			LineWidth    *int  `json:"line_width,omitempty"`
 		} `json:"line_numbers,omitempty"`
+
+		LineHighlight *bool `json:"line_highlight,omitempty"`
 	} `json:"ui,omitempty"`
 	System struct {
 		HighDpi *bool `json:"high_dpi,omitempty"`
@@ -169,6 +171,10 @@ func MergeSettings(defaults *Settings, user *Settings) *Settings {
 	}
 	if user.UI.LineNumbers.LineWidth != nil {
 		merged.UI.LineNumbers.LineWidth = user.UI.LineNumbers.LineWidth
+	}
+
+	if user.UI.LineHighlight != nil {
+		merged.UI.LineHighlight = user.UI.LineHighlight
 	}
 
 	// Merge system settings
