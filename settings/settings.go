@@ -59,6 +59,11 @@ type Settings struct {
 		ScrollPadding *int    `json:"scroll_padding,omitempty"`
 		CursorRatio   *int    `json:"cursor_ratio,omitempty"`
 		Theme         *string `json:"theme,omitempty"`
+		LineNumbers   struct {
+			Show     *bool `json:"show,omitempty"`
+			Relative *bool `json:"relative,omitempty"`
+			Width    *int  `json:"width,omitempty"`
+		} `json:"line_numbers,omitempty"`
 	} `json:"ui,omitempty"`
 	System struct {
 		HighDpi *bool `json:"high_dpi,omitempty"`
@@ -153,6 +158,17 @@ func MergeSettings(defaults *Settings, user *Settings) *Settings {
 	}
 	if user.UI.Theme != nil {
 		merged.UI.Theme = user.UI.Theme
+	}
+
+	// Merge line number settings
+	if user.UI.LineNumbers.Show != nil {
+		merged.UI.LineNumbers.Show = user.UI.LineNumbers.Show
+	}
+	if user.UI.LineNumbers.Relative != nil {
+		merged.UI.LineNumbers.Relative = user.UI.LineNumbers.Relative
+	}
+	if user.UI.LineNumbers.Width != nil {
+		merged.UI.LineNumbers.Width = user.UI.LineNumbers.Width
 	}
 
 	// Merge system settings

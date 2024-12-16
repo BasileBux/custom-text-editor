@@ -10,13 +10,13 @@ This file structure is copied from the [zed docs](https://zed.dev/docs/configuri
 ### Padding
 
 - Description: Space between text and edge of the window.
-- Setting: `padding_[sub-setting]`
-  - Sub-settings: `top`, `right`, `bottom`, `left`
+- Setting: `padding`
 - Default: 13
 
-#### Options
+##### Options
 
-`integer` values
+`integer` values\
+Sub-settings: `top`, `right`, `bottom`, `left`
 
 ```toml
 "padding": {
@@ -32,7 +32,7 @@ This file structure is copied from the [zed docs](https://zed.dev/docs/configuri
 - Setting: `font_family`
 - Default: "GeistMonoNerdFont-Regular"
 
-#### Options
+##### Options
 
 `string` values
 
@@ -42,7 +42,7 @@ This file structure is copied from the [zed docs](https://zed.dev/docs/configuri
 - Setting: `font_size`
 - Default: 30
 
-#### Options
+##### Options
 
 `integers` values
 
@@ -52,7 +52,7 @@ This file structure is copied from the [zed docs](https://zed.dev/docs/configuri
 - Setting: `font_spacing`
 - Default: 1
 
-#### Options
+##### Options
 
 `integer` values
 
@@ -62,7 +62,7 @@ This file structure is copied from the [zed docs](https://zed.dev/docs/configuri
 - Setting: `scroll_padding`
 - Default: 5
 
-#### Options
+##### Options
 
 positive `integer` values (can be 0)
 
@@ -72,7 +72,7 @@ positive `integer` values (can be 0)
 - Setting: `cursor_ratio`
 - Default: 1
 
-#### Options
+##### Options
 
 `integers` values between 0 and 1 with 0 not included = ]0;1]
 
@@ -82,9 +82,44 @@ positive `integer` values (can be 0)
 - Setting: `theme`
 - Default: "Tokyo-night-storm"
 
-#### Options
+##### Options
 
 `string` values. Theme name which corresponds to the name of the theme file in ~/.config/kenzan/themes/
+
+### Line numbers
+
+- Description: Section which handles line numbers
+- Setting: `line_numbers`
+
+#### Show
+
+- Description: Show the line numbers or not
+- Setting: `show`
+- Default: true
+
+##### Options
+
+`boolean`
+
+#### Relative
+
+- Description: Set line numbers as relative or absolute
+- Setting: `relative`
+- Default: false
+
+##### Options
+
+`boolean`
+
+#### Width
+
+- Description: Space from left window border to text which will contain the line numbers
+- Setting: `width`
+- Default: 15
+
+##### Options
+
+Positive `integer` values. If the value is too small it will just look ugly
 
 ## System
 
@@ -94,7 +129,7 @@ positive `integer` values (can be 0)
 - Setting: `high_dpi`
 - Default: true
 
-#### Options
+##### Options
 
 `boolean` values. True is activated. 
 
