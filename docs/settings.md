@@ -111,25 +111,27 @@ positive `integer` values (can be 0)
 
 `boolean`
 
-#### Width
-
-- Description: Space from left window border to text which will contain the line numbers
-- Setting: `width`
-- Default: 15
-
-##### Options
-
-Positive `integer` values. If the value is too small it will just look ugly
-
-#### Padding
+#### Padding left
 
 - Description: Space from left window border to line numbers
 - Setting: `padding`
-- Default: 3
+- Default: 10
 
 ##### Options
 
 Positive `integer` values. If the value is too small or too big, it will just look ugly
+
+#### Padding right
+
+- Description: Space from line numbers to text
+- Setting: `padding`
+- Default: 8
+
+##### Options
+
+Positive `integer` values. If the value is too small or too big, it will just look ugly
+
+
 
 ## System
 

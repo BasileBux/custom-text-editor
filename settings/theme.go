@@ -25,27 +25,29 @@ type ThemeHex struct {
 	} `json:"syntax"`
 
 	Editor struct {
-		Fg string `json:"fg"`
-		Bg string `json:"bg"`
+		Fg        string `json:"fg"`
+		Bg        string `json:"bg"`
+		Highlight string `json:"highlight"`
 	} `json:"editor"`
 }
 
 type Theme struct {
 	Syntax struct {
-		Tag      rl.Color 
-		Func     rl.Color 
-		Entity   rl.Color 
-		String   rl.Color 
-		Escape   rl.Color 
-		Keyword  rl.Color 
-		Comment  rl.Color 
-		Constant rl.Color 
-		Operator rl.Color 
-	} 
+		Tag      rl.Color
+		Func     rl.Color
+		Entity   rl.Color
+		String   rl.Color
+		Escape   rl.Color
+		Keyword  rl.Color
+		Comment  rl.Color
+		Constant rl.Color
+		Operator rl.Color
+	}
 
 	Editor struct {
-		Fg rl.Color 
-		Bg rl.Color 
+		Fg        rl.Color
+		Bg        rl.Color
+		Highlight rl.Color
 	}
 }
 
@@ -66,6 +68,7 @@ func HexToRayColorTheme(hexTheme ThemeHex) Theme {
 	// Editor
 	rayTheme.Editor.Fg = GetRayColor(hexTheme.Editor.Fg)
 	rayTheme.Editor.Bg = GetRayColor(hexTheme.Editor.Bg)
+	rayTheme.Editor.Highlight = GetRayColor(hexTheme.Editor.Highlight)
 	return rayTheme
 }
 

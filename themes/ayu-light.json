@@ -13,6 +13,7 @@
 
   "editor": {
     "fg": "#5C6166FF",
-    "bg": "#FCFCFCFF"
+    "bg": "#FCFCFCFF",
+    "highlight": "#FA8D3EFF"
   }
 }

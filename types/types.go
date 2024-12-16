@@ -53,8 +53,9 @@ type ProgramState struct {
 }
 
 type Cache struct {
-	Syntax []SyntaxCache
-	Cursor Vec2
+	Syntax      []SyntaxCache
+	Cursor      Vec2
+	LineNumbers LineNumbersCache
 }
 
 type SyntaxCache struct {
@@ -67,4 +68,11 @@ type TextRenderCursor struct {
 	Line float32 // pixels
 	Row  float32 // pixels
 	Stop bool
+}
+
+type LineNumbersCache struct {
+	Width     int32
+	Positions []rl.Vector2
+	Colors    []rl.Color
+	Numbers   []string
 }

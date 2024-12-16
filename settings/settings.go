@@ -45,10 +45,10 @@ type Settings struct {
 		Theme         *string `json:"theme,omitempty"`
 
 		LineNumbers struct {
-			Show     *bool `json:"show,omitempty"`
-			Relative *bool `json:"relative,omitempty"`
-			Width    *int  `json:"width,omitempty"`
-			Padding  *int  `json:"padding,omitempty"`
+			Show         *bool `json:"show,omitempty"`
+			Relative     *bool `json:"relative,omitempty"`
+			PaddingLeft  *int  `json:"padding_left,omitempty"`
+			PaddingRight *int  `json:"padding_right,omitempty"`
 		} `json:"line_numbers,omitempty"`
 	} `json:"ui,omitempty"`
 	System struct {
@@ -65,11 +65,6 @@ func loadSettings(path string) (*Settings, error) {
 	var settings Settings
 	if err := json.Unmarshal(data, &settings); err != nil {
 		return nil, err
-	}
-
-	// Remove line number padding if show = false
-	if !*settings.UI.LineNumbers.Show {
-		*settings.UI.LineNumbers.Width = 0
 	}
 
 	return &settings, nil
@@ -158,8 +153,11 @@ func MergeSettings(defaults *Settings, user *Settings) *Settings {
 	if user.UI.LineNumbers.Relative != nil {
 		merged.UI.LineNumbers.Relative = user.UI.LineNumbers.Relative
 	}
-	if user.UI.LineNumbers.Width != nil {
-		merged.UI.LineNumbers.Width = user.UI.LineNumbers.Width
+	if user.UI.LineNumbers.PaddingLeft != nil {
+		merged.UI.LineNumbers.PaddingLeft = user.UI.LineNumbers.PaddingLeft
+	}
+	if user.UI.LineNumbers.PaddingRight != nil {
+		merged.UI.LineNumbers.PaddingRight = user.UI.LineNumbers.PaddingRight
 	}
 
 	// Merge system settings

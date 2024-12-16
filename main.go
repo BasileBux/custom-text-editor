@@ -88,8 +88,6 @@ func main() {
 		},
 	}
 
-	userStyle.PaddingLeft += float32(*settings.UI.LineNumbers.Width)
-
 	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(settings.UI.Theme)
 	if err != nil {
 		fmt.Println("Error could not open color theme")
@@ -130,6 +128,14 @@ func main() {
 	state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
 
 	copy(state.SavedFile, userText)
+
+	// Get line numebr
+	largestLineNb := fmt.Sprintf("%d", len(userText)-1)
+	largestNbSize := rl.MeasureTextEx(userStyle.Font, largestLineNb, userStyle.FontSize, userStyle.FontSpacing)
+	state.Cache.LineNumbers.Width = int32(largestNbSize.X)
+
+	userStyle.PaddingLeft += float32(state.Cache.LineNumbers.Width) +
+		float32(*settings.UI.LineNumbers.PaddingLeft) + float32(*settings.UI.LineNumbers.PaddingRight)
 
 	for !rl.WindowShouldClose() {
 
@@ -181,9 +187,14 @@ func main() {
 			userStyle.ColorTheme.Editor.Fg,
 		)
 
+		if state.Update.Cursor {
+			r.CalculateLineNbPositions(*settings.UI.LineNumbers.Relative, *settings.UI.LineNumbers.PaddingLeft,
+				*settings.UI.LineNumbers.PaddingRight, &state, &userStyle)
+		}
+
 		if *settings.UI.LineNumbers.Show {
-			r.RenderLineNumbers(*settings.UI.LineNumbers.Relative, *settings.UI.LineNumbers.Width,
-				*settings.UI.LineNumbers.Padding, &state, &userStyle)
+			r.RenderLineNumbers(*settings.UI.LineNumbers.PaddingLeft,
+				*settings.UI.LineNumbers.PaddingRight, &state, &userStyle)
 		}
 
 		state.Update.Reset()
