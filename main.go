@@ -151,6 +151,12 @@ func main() {
 
 	for !rl.WindowShouldClose() {
 
+		if !rl.IsWindowFocused() {
+			rl.SetTargetFPS(12)
+		} else {
+			rl.SetTargetFPS(FPS)
+		}
+
 		terminate := input.InputManager(&userText, &state, &userStyle)
 		if terminate {
 			break
@@ -179,6 +185,10 @@ func main() {
 			state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
 		}
 
+		if state.Update.Cursor || state.Update.SyntaxHighlight {
+			r.CalculateCursorPos(userText, &nav, &state.Cache, &userStyle)
+		}
+
 		if *settings.LineHighlight {
 			rl.DrawRectangle(0, int32(state.Cache.Cursor.Y), int32(state.ViewPortSize.X),
 				int32(userStyle.CharSize.Y), userStyle.ColorTheme.Editor.Highlight)
@@ -192,9 +202,6 @@ func main() {
 		textToRender = strings.TrimRight(textToRender, "\n")
 		r.RenderText(state.ActiveLanguage, &textToRender, &state, &userStyle)
 
-		if state.Update.Cursor || state.Update.SyntaxHighlight {
-			r.CalculateCursorPos(userText, &nav, &state.Cache, &userStyle)
-		}
 		rl.DrawRectangle(
 			int32(state.Cache.Cursor.X),
 			int32(state.Cache.Cursor.Y),
@@ -213,7 +220,6 @@ func main() {
 
 		state.Update.Reset()
 		rl.EndDrawing()
-
 	}
 	rl.UnloadFont(userStyle.Font)
 }
