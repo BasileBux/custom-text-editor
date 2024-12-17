@@ -135,17 +135,19 @@ func main() {
 
 	copy(state.SavedFile, userText)
 
-	// Get line number
-	lastLineNb := len(userText) - 1
-	if userStyle.LineNumbers.OffsetCurrent && len(userText)-1 < 100 {
-		lastLineNb *= 10
-	}
-	largestLineNb := fmt.Sprintf("%d", lastLineNb)
-	largestNbSize := rl.MeasureTextEx(userStyle.Font, largestLineNb, userStyle.FontSize, userStyle.FontSpacing)
-	state.Cache.LineNumbers.Width = int32(largestNbSize.X)
+	// Prepare line number cache
+	if *settings.LineNumbers.Show {
+		lastLineNb := len(userText) - 1
+		if userStyle.LineNumbers.OffsetCurrent && len(userText)-1 < 100 {
+			lastLineNb *= 10
+		}
+		largestLineNb := fmt.Sprintf("%d", lastLineNb)
+		largestNbSize := rl.MeasureTextEx(userStyle.Font, largestLineNb, userStyle.FontSize, userStyle.FontSpacing)
+		state.Cache.LineNumbers.Width = int32(largestNbSize.X)
 
-	userStyle.PaddingLeft += float32(state.Cache.LineNumbers.Width) +
-		float32(*settings.LineNumbers.PaddingLeft) + float32(*settings.LineNumbers.PaddingRight)
+		userStyle.PaddingLeft += float32(state.Cache.LineNumbers.Width) +
+			float32(*settings.LineNumbers.PaddingLeft) + float32(*settings.LineNumbers.PaddingRight)
+	}
 
 	for !rl.WindowShouldClose() {
 

@@ -1,0 +1,26 @@
+{
+    "padding": {
+      "top": 13,
+      "right": 13,
+      "bottom": 13,
+      "left": 2
+    },
+    "font_family": "GeistMonoNerdFont-Regular.otf",
+    "font_size": 30,
+    "font_spacing": 1,
+    "scroll_padding": 5,
+    "cursor_ratio": 1,
+    "theme": "ayu-light",
+
+    "line_numbers": {
+      "show": true,
+      "relative": false,
+      "padding_left": 24,
+      "padding_right": 10,
+      "line_width": 0,
+      "offset_current": true
+    },
+
+    "line_highlight": true,
+    "high_dpi": true
+}

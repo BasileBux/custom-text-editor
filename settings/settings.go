@@ -1,6 +1,7 @@
 package settings
 
 import (
+	_ "embed"
 	"encoding/json"
 	"os"
 
@@ -64,12 +65,23 @@ type Settings struct {
 	HighDpi       *bool `json:"high_dpi,omitempty"`
 }
 
+//go:embed default.json
+var defaultData []byte
+
+func loadDefaultSettings() (*Settings, error) {
+	var settings Settings
+	if err := json.Unmarshal(defaultData, &settings); err != nil {
+		return nil, err
+	}
+
+	return &settings, nil
+}
+
 func loadSettings(path string) (*Settings, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-
 	var settings Settings
 	if err := json.Unmarshal(data, &settings); err != nil {
 		return nil, err
@@ -97,9 +109,8 @@ func LoadAllSettings() (*Settings, error) {
 		configDir = os.ExpandEnv("$HOME/.config")
 	}
 	configDir += "/kenzan"
-	defaultPath := configDir + "/default.json"
 
-	defaults, err := loadSettings(defaultPath)
+	defaults, err := loadDefaultSettings()
 	if err != nil {
 		return nil, err
 	}

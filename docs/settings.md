@@ -10,7 +10,7 @@ This file structure is copied from the [zed docs](https://zed.dev/docs/configuri
 
 - Description: Space between text and edge of the window.
 - Setting: `padding`
-- Default: 13
+- Default: 13, 13, 13, 2
 
 #### Options
 
@@ -21,7 +21,8 @@ Sub-settings: `top`, `right`, `bottom`, `left`
 "padding": {
     "top": 13,
     "right": 13,
-    ...
+	"bottom": 13,
+	"left": 2
 },
 ```
 
@@ -79,7 +80,7 @@ positive `integer` values (can be 0)
 
 - Description: Editor color theme name
 - Setting: `theme`
-- Default: "Tokyo-night-storm"
+- Default: "ayu-light"
 
 #### Options
 
@@ -124,7 +125,7 @@ Positive `integer` values. If the value is too small or too big, it will just lo
 
 - Description: Space from line numbers to text
 - Setting: `padding_right`
-- Default: 8
+- Default: 10
 
 #### Options
 
@@ -134,7 +135,7 @@ Positive `integer` values. If the value is too small or too big, it will just lo
 
 - Description: Width of the line separating line numbers from text
 - Setting: `line_width`
-- Default: 2
+- Default: 0
 
 ### Offset current
 
