@@ -47,7 +47,8 @@ func calculateAbsLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 	}
 
 	for i := range state.ViewPortSteps.Y + 2 {
-		lineNb := fmt.Sprintf("%d", i+int(state.Nav.ScrollOffset.Y)-offset)
+		index := int(state.Nav.ScrollOffset.Y) - offset + 1
+		lineNb := fmt.Sprintf("%d", i+index)
 		nbSize := rl.MeasureTextEx(style.Font, lineNb, style.FontSize, style.FontSpacing)
 		Xpos := width - int32(paddingR) - int32(nbSize.X)
 		pos := rl.Vector2{
@@ -55,21 +56,19 @@ func calculateAbsLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 			Y: Ypos,
 		}
 
-		if style.LineNumbers.OffsetCurrent &&
-			i+int(state.Nav.ScrollOffset.Y)-offset == state.Nav.SelectedLine &&
-			i+int(state.Nav.ScrollOffset.Y)-offset < 100 {
-			pos.X -= nbSize.X / float32(len(lineNb))
+		currentColor := style.ColorTheme.Editor.Gutter.Normal
+		if i+index == state.Nav.SelectedLine+1 {
+			currentColor = style.ColorTheme.Editor.Gutter.Active
+
+			if style.LineNumbers.OffsetCurrent && i+index < 100 {
+				pos.X -= nbSize.X / float32(len(lineNb))
+			}
 		}
 
 		state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
-
-		currentColor := style.ColorTheme.Editor.Gutter.Normal
-		if i+int(state.Nav.ScrollOffset.Y)-offset == state.Nav.SelectedLine {
-			currentColor = style.ColorTheme.Editor.Gutter.Active
-		}
 		state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
 
-		if i+int(state.Nav.ScrollOffset.Y)-offset >= len(state.SavedFile) {
+		if i+index >= len(state.SavedFile) {
 			lineNb = "~"
 		}
 		state.Cache.LineNumbers.Numbers = append(state.Cache.LineNumbers.Numbers, lineNb)
@@ -77,8 +76,6 @@ func calculateAbsLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 	}
 }
 
-// Code can be reafactored easily. The only thing changing is the number to display
-// Right now, there is a ton of copy paste but it works tho
 func calculateRelLineNbPositions(paddingL int, paddingR int, state *t.ProgramState, style *st.WindowStyle) {
 	state.Cache.LineNumbers.Positions = make([]rl.Vector2, 0) // empty slice
 	state.Cache.LineNumbers.Colors = make([]rl.Color, 0)      // empty slice
@@ -94,51 +91,34 @@ func calculateRelLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 		offset = 1
 	}
 
-	var index int
-	for index = (int(state.Nav.ScrollOffset.Y)-state.Nav.SelectedLine)*-1 + offset; index > 0; index-- {
-		lineNb := fmt.Sprintf("%d", index)
+	index := (int(state.Nav.ScrollOffset.Y)-state.Nav.SelectedLine)*-1 + offset
+	for range state.ViewPortSteps.Y + 2 {
+		var lineNb string
+		if index > 0 {
+			lineNb = fmt.Sprintf("%d", index)
+		} else if index == 0 {
+			lineNb = fmt.Sprintf("%d", state.Nav.SelectedLine+1)
+		} else {
+			lineNb = fmt.Sprintf("%d", (index)*-1)
+		}
+		index--
 		nbSize := rl.MeasureTextEx(style.Font, lineNb, style.FontSize, style.FontSpacing)
 		Xpos := width - int32(paddingR) - int32(nbSize.X)
 		pos := rl.Vector2{
 			X: float32(Xpos),
 			Y: Ypos,
 		}
-		state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
+
 		currentColor := style.ColorTheme.Editor.Gutter.Normal
-		state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
-		state.Cache.LineNumbers.Numbers = append(state.Cache.LineNumbers.Numbers, lineNb)
-		Ypos += nbSize.Y + style.FontSpacing
-	}
 
-	lineNb := fmt.Sprintf("%d", state.Nav.SelectedLine)
-	nbSize := rl.MeasureTextEx(style.Font, lineNb, style.FontSize, style.FontSpacing)
-	Xpos := width - int32(paddingR) - int32(nbSize.X)
-	pos := rl.Vector2{
-		X: float32(Xpos),
-		Y: Ypos,
-	}
-
-	if style.LineNumbers.OffsetCurrent &&
-		state.Nav.SelectedLine < 100 {
-		pos.X -= nbSize.X / float32(len(lineNb))
-	}
-
-	state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
-	currentColor := style.ColorTheme.Editor.Gutter.Active
-	state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
-	state.Cache.LineNumbers.Numbers = append(state.Cache.LineNumbers.Numbers, lineNb)
-	Ypos += nbSize.Y + style.FontSpacing
-
-	for i := 1; i < state.ViewPortSteps.Y+1-index; i++ {
-		lineNb := fmt.Sprintf("%d", i)
-		nbSize := rl.MeasureTextEx(style.Font, lineNb, style.FontSize, style.FontSpacing)
-		Xpos := width - int32(paddingR) - int32(nbSize.X)
-		pos := rl.Vector2{
-			X: float32(Xpos),
-			Y: Ypos,
+		if index == -1 {
+			if style.LineNumbers.OffsetCurrent && state.Nav.SelectedLine < 100 {
+				pos.X -= nbSize.X / float32(len(lineNb))
+			}
+			currentColor = style.ColorTheme.Editor.Gutter.Active
 		}
+
 		state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
-		currentColor := style.ColorTheme.Editor.Gutter.Normal
 		state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)
 		state.Cache.LineNumbers.Numbers = append(state.Cache.LineNumbers.Numbers, lineNb)
 		Ypos += nbSize.Y + style.FontSpacing
