@@ -29,7 +29,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 		if char >= 32 && char <= 126 {
 			state.SaveState = false
 			state.ForceQuit = false
-			state.Update.Highlight = true
+			state.Update.SyntaxHighlight = true
 			if nav.AbsoluteSelectedRow > len((*text)[nav.SelectedLine]) {
 				nav.AbsoluteSelectedRow = len((*text)[nav.SelectedLine])
 			}
@@ -63,7 +63,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 
 	// Backspace
 	if rl.IsKeyPressedRepeat(rl.KeyBackspace) || rl.IsKeyPressed(rl.KeyBackspace) {
-		state.Update.Highlight = true
+		state.Update.SyntaxHighlight = true
 		state.SaveState = false
 		state.ForceQuit = false
 		backSpace(text, state, style)
@@ -74,7 +74,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 		if state.ForceQuit {
 			return true
 		}
-		state.Update.Highlight = true
+		state.Update.SyntaxHighlight = true
 		state.SaveState = false
 		newText := make([]string, len(*text)+1)
 		copy(newText, (*text)[:nav.SelectedLine+1])
@@ -98,7 +98,7 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 
 	// Tab
 	if rl.IsKeyPressed(rl.KeyTab) {
-		state.Update.Highlight = true
+		state.Update.SyntaxHighlight = true
 		state.SaveState = false
 		state.ForceQuit = false
 		begin := (*text)[nav.SelectedLine][:nav.SelectedRow]

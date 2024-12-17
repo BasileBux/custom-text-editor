@@ -16,7 +16,7 @@ func highlight(text *string, color *rl.Color, cursor *t.TextRenderCursor, state 
 func RenderText(lang t.Language, text *string, state *t.ProgramState, style *st.WindowStyle) {
 	if lang != t.NONE {
 
-		if state.Update.Highlight {
+		if state.Update.SyntaxHighlight {
 
 			code := ([]byte)(*text)
 			parser := tree_sitter.NewParser()

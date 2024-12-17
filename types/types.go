@@ -30,13 +30,13 @@ type Vec2 struct {
 }
 
 type Update struct {
-	Cursor    bool
-	Highlight bool
+	Cursor          bool
+	SyntaxHighlight bool
 }
 
 func (u *Update) Reset() {
 	u.Cursor = false
-	u.Highlight = false
+	u.SyntaxHighlight = false
 }
 
 type ProgramState struct {

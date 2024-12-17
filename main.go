@@ -119,7 +119,7 @@ func main() {
 
 	state := t.ProgramState{
 		Nav:            &nav,
-		Update:         t.Update{Cursor: true, Highlight: true},
+		Update:         t.Update{Cursor: true, SyntaxHighlight: true},
 		AcitveFile:     filename,
 		ActiveLanguage: fileLanguage,
 		SavedFile:      make([]string, len(userText)),
@@ -156,8 +156,7 @@ func main() {
 				if noChanges {
 					break
 				}
-				fmt.Println("The file wasn't saved. Are you sure you want to close the editor ?")
-				fmt.Println("press enter to confirm")
+				fmt.Println("The file wasn't saved. Are you sure you want to close the editor ?\npress enter to confirm")
 				state.ForceQuit = true
 			}
 		}
@@ -186,7 +185,7 @@ func main() {
 		textToRender = strings.TrimRight(textToRender, "\n")
 		r.RenderText(state.ActiveLanguage, &textToRender, &state, &userStyle)
 
-		if state.Update.Cursor || state.Update.Highlight {
+		if state.Update.Cursor || state.Update.SyntaxHighlight {
 			r.CalculateCursorPos(userText, &nav, &state.Cache, &userStyle)
 		}
 		rl.DrawRectangle(
