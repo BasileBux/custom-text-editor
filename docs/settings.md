@@ -5,15 +5,14 @@ You can access the defaults in ~/.config/kenzan/default.json to look up the glob
 
 This file structure is copied from the [zed docs](https://zed.dev/docs/configuring-zed)
 
-## Ui
 
-### Padding
+## Padding
 
 - Description: Space between text and edge of the window.
 - Setting: `padding`
 - Default: 13
 
-##### Options
+#### Options
 
 `integer` values\
 Sub-settings: `top`, `right`, `bottom`, `left`
@@ -26,140 +25,148 @@ Sub-settings: `top`, `right`, `bottom`, `left`
 },
 ```
 
-### Font Family
+## Font Family
 
 - Description: Font family to use in the editor
 - Setting: `font_family`
 - Default: "GeistMonoNerdFont-Regular"
 
-##### Options
+#### Options
 
 `string` values
 
-### Font size
+## Font size
 
 - Description: Font size to use in the editor
 - Setting: `font_size`
 - Default: 30
 
-##### Options
+#### Options
 
 `integers` values
 
-### Font spacing
+## Font spacing
 
 - Description: Space between characters
 - Setting: `font_spacing`
 - Default: 1
 
-##### Options
+#### Options
 
 `integer` values
 
-### Scroll padding
+## Scroll padding
 
 - Description: Number of characters and lines to keep visible around the cursor when scrolling, maintaining a buffer in all directions.
 - Setting: `scroll_padding`
 - Default: 5
 
-##### Options
+#### Options
 
 positive `integer` values (can be 0)
 
-### Cursor ratio
+## Cursor ratio
 
 - Description: Ratio of cursor height to text height.
 - Setting: `cursor_ratio`
 - Default: 1
 
-##### Options
+#### Options
 
 `integers` values between 0 and 1 with 0 not included = ]0;1]
 
-### Theme
+## Theme
 
 - Description: Editor color theme name
 - Setting: `theme`
 - Default: "Tokyo-night-storm"
 
-##### Options
+#### Options
 
 `string` values. Theme name which corresponds to the name of the theme file in ~/.config/kenzan/themes/
 
-### Line numbers
+## Line numbers
 
 - Description: Section which handles line numbers
 - Setting: `line_numbers`
 
-#### Show
+### Show
 
 - Description: Show the line numbers or not
 - Setting: `show`
 - Default: true
 
-##### Options
+#### Options
 
 `boolean`
 
-#### Relative
+### Relative
 
 - Description: Set line numbers as relative or absolute
 - Setting: `relative`
 - Default: false
 
-##### Options
+#### Options
 
 `boolean`
 
-#### Padding left
+### Padding left
 
 - Description: Space from left window border to line numbers
 - Setting: `padding_left`
 - Default: 24
 
-##### Options
+#### Options
 
 Positive `integer` values. If the value is too small or too big, it will just look ugly
 
-#### Padding right
+### Padding right
 
 - Description: Space from line numbers to text
 - Setting: `padding_right`
 - Default: 8
 
-##### Options
+#### Options
 
 Positive `integer` values. If the value is too small or too big, it will just look ugly
 
-#### Line width
+### Line width
 
 - Description: Width of the line separating line numbers from text
 - Setting: `line_width`
 - Default: 2
 
-##### Options
+### Offset current
+
+- Description: Aligns the current line number to the right to 3 digits
+- Settings: `offset_current`
+- Default: true
+
+#### Options
+
+`boolean`
+
+#### Options
 
 Positive `integer` values. Set to 0 to remove line
 
-### Line highlight
+## Line highlight
 
 - Description: Toggle highlight on current line
 - Setting: `line_highlight`
 - Default: true
 
-##### Options
+#### Options
 
 `boolean`
 
-## System
-
-### High dpi
+## High dpi
 
 - Description: Enable high dpi mode
 - Setting: `high_dpi`
 - Default: true
 
-##### Options
+#### Options
 
 `boolean` values. True is activated. 
 

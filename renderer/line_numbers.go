@@ -54,6 +54,13 @@ func calculateAbsLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 			X: float32(Xpos),
 			Y: Ypos,
 		}
+
+		if style.LineNumbers.OffsetCurrent &&
+			i+int(state.Nav.ScrollOffset.Y)-offset == state.Nav.SelectedLine &&
+			i+int(state.Nav.ScrollOffset.Y)-offset < 100 {
+			pos.X -= nbSize.X / float32(len(lineNb))
+		}
+
 		state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
 
 		currentColor := style.ColorTheme.Editor.Gutter.Normal
@@ -110,6 +117,12 @@ func calculateRelLineNbPositions(paddingL int, paddingR int, state *t.ProgramSta
 		X: float32(Xpos),
 		Y: Ypos,
 	}
+
+	if style.LineNumbers.OffsetCurrent &&
+		state.Nav.SelectedLine < 100 {
+		pos.X -= nbSize.X / float32(len(lineNb))
+	}
+
 	state.Cache.LineNumbers.Positions = append(state.Cache.LineNumbers.Positions, pos)
 	currentColor := style.ColorTheme.Editor.Gutter.Active
 	state.Cache.LineNumbers.Colors = append(state.Cache.LineNumbers.Colors, currentColor)

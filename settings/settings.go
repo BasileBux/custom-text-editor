@@ -17,9 +17,10 @@ type Cursor struct {
 }
 
 type LineNumbers struct {
-	PaddingLeft  int
-	PaddingRight int
-	LineWidth    int
+	PaddingLeft   int
+	PaddingRight  int
+	LineWidth     int
+	OffsetCurrent bool
 }
 
 type WindowStyle struct {
@@ -37,33 +38,30 @@ type WindowStyle struct {
 }
 
 type Settings struct {
-	UI struct {
-		Padding struct {
-			Top    *int `json:"top,omitempty"`
-			Right  *int `json:"right,omitempty"`
-			Bottom *int `json:"bottom,omitempty"`
-			Left   *int `json:"left,omitempty"`
-		} `json:"padding,omitempty"`
-		FontFamily    *string `json:"font_family,omitempty"`
-		FontSize      *int    `json:"font_size,omitempty"`
-		FontSpacing   *int    `json:"font_spacing,omitempty"`
-		ScrollPadding *int    `json:"scroll_padding,omitempty"`
-		CursorRatio   *int    `json:"cursor_ratio,omitempty"`
-		Theme         *string `json:"theme,omitempty"`
+	Padding struct {
+		Top    *int `json:"top,omitempty"`
+		Right  *int `json:"right,omitempty"`
+		Bottom *int `json:"bottom,omitempty"`
+		Left   *int `json:"left,omitempty"`
+	} `json:"padding,omitempty"`
+	FontFamily    *string `json:"font_family,omitempty"`
+	FontSize      *int    `json:"font_size,omitempty"`
+	FontSpacing   *int    `json:"font_spacing,omitempty"`
+	ScrollPadding *int    `json:"scroll_padding,omitempty"`
+	CursorRatio   *int    `json:"cursor_ratio,omitempty"`
+	Theme         *string `json:"theme,omitempty"`
 
-		LineNumbers struct {
-			Show         *bool `json:"show,omitempty"`
-			Relative     *bool `json:"relative,omitempty"`
-			PaddingLeft  *int  `json:"padding_left,omitempty"`
-			PaddingRight *int  `json:"padding_right,omitempty"`
-			LineWidth    *int  `json:"line_width,omitempty"`
-		} `json:"line_numbers,omitempty"`
+	LineNumbers struct {
+		Show          *bool `json:"show,omitempty"`
+		Relative      *bool `json:"relative,omitempty"`
+		PaddingLeft   *int  `json:"padding_left,omitempty"`
+		PaddingRight  *int  `json:"padding_right,omitempty"`
+		LineWidth     *int  `json:"line_width,omitempty"`
+		OffsetCurrent *bool `json:"offset_current,omitempty"`
+	} `json:"line_numbers,omitempty"`
 
-		LineHighlight *bool `json:"line_highlight,omitempty"`
-	} `json:"ui,omitempty"`
-	System struct {
-		HighDpi *bool `json:"high_dpi,omitempty"`
-	} `json:"system,omitempty"`
+	LineHighlight *bool `json:"line_highlight,omitempty"`
+	HighDpi       *bool `json:"high_dpi,omitempty"`
 }
 
 func loadSettings(path string) (*Settings, error) {
@@ -123,63 +121,66 @@ func MergeSettings(defaults *Settings, user *Settings) *Settings {
 	merged := *defaults // Create a copy of defaults
 
 	// Merge padding settings
-	if user.UI.Padding.Top != nil {
-		merged.UI.Padding.Top = user.UI.Padding.Top
+	if user.Padding.Top != nil {
+		merged.Padding.Top = user.Padding.Top
 	}
-	if user.UI.Padding.Right != nil {
-		merged.UI.Padding.Right = user.UI.Padding.Right
+	if user.Padding.Right != nil {
+		merged.Padding.Right = user.Padding.Right
 	}
-	if user.UI.Padding.Bottom != nil {
-		merged.UI.Padding.Bottom = user.UI.Padding.Bottom
+	if user.Padding.Bottom != nil {
+		merged.Padding.Bottom = user.Padding.Bottom
 	}
-	if user.UI.Padding.Left != nil {
-		merged.UI.Padding.Left = user.UI.Padding.Left
+	if user.Padding.Left != nil {
+		merged.Padding.Left = user.Padding.Left
 	}
 
-	// Merge other UI settings
-	if user.UI.FontFamily != nil {
-		merged.UI.FontFamily = user.UI.FontFamily
+	// Merge other settings
+	if user.FontFamily != nil {
+		merged.FontFamily = user.FontFamily
 	}
-	if user.UI.FontSize != nil {
-		merged.UI.FontSize = user.UI.FontSize
+	if user.FontSize != nil {
+		merged.FontSize = user.FontSize
 	}
-	if user.UI.FontSpacing != nil {
-		merged.UI.FontSpacing = user.UI.FontSpacing
+	if user.FontSpacing != nil {
+		merged.FontSpacing = user.FontSpacing
 	}
-	if user.UI.ScrollPadding != nil {
-		merged.UI.ScrollPadding = user.UI.ScrollPadding
+	if user.ScrollPadding != nil {
+		merged.ScrollPadding = user.ScrollPadding
 	}
-	if user.UI.CursorRatio != nil {
-		merged.UI.CursorRatio = user.UI.CursorRatio
+	if user.CursorRatio != nil {
+		merged.CursorRatio = user.CursorRatio
 	}
-	if user.UI.Theme != nil {
-		merged.UI.Theme = user.UI.Theme
+	if user.Theme != nil {
+		merged.Theme = user.Theme
 	}
 
 	// Merge line number settings
-	if user.UI.LineNumbers.Show != nil {
-		merged.UI.LineNumbers.Show = user.UI.LineNumbers.Show
+	if user.LineNumbers.Show != nil {
+		merged.LineNumbers.Show = user.LineNumbers.Show
 	}
-	if user.UI.LineNumbers.Relative != nil {
-		merged.UI.LineNumbers.Relative = user.UI.LineNumbers.Relative
+	if user.LineNumbers.Relative != nil {
+		merged.LineNumbers.Relative = user.LineNumbers.Relative
 	}
-	if user.UI.LineNumbers.PaddingLeft != nil {
-		merged.UI.LineNumbers.PaddingLeft = user.UI.LineNumbers.PaddingLeft
+	if user.LineNumbers.PaddingLeft != nil {
+		merged.LineNumbers.PaddingLeft = user.LineNumbers.PaddingLeft
 	}
-	if user.UI.LineNumbers.PaddingRight != nil {
-		merged.UI.LineNumbers.PaddingRight = user.UI.LineNumbers.PaddingRight
+	if user.LineNumbers.PaddingRight != nil {
+		merged.LineNumbers.PaddingRight = user.LineNumbers.PaddingRight
 	}
-	if user.UI.LineNumbers.LineWidth != nil {
-		merged.UI.LineNumbers.LineWidth = user.UI.LineNumbers.LineWidth
+	if user.LineNumbers.LineWidth != nil {
+		merged.LineNumbers.LineWidth = user.LineNumbers.LineWidth
+	}
+	if user.LineNumbers.OffsetCurrent != nil {
+		merged.LineNumbers.OffsetCurrent = user.LineNumbers.OffsetCurrent
 	}
 
-	if user.UI.LineHighlight != nil {
-		merged.UI.LineHighlight = user.UI.LineHighlight
+	if user.LineHighlight != nil {
+		merged.LineHighlight = user.LineHighlight
 	}
 
 	// Merge system settings
-	if user.System.HighDpi != nil {
-		merged.System.HighDpi = user.System.HighDpi
+	if user.HighDpi != nil {
+		merged.HighDpi = user.HighDpi
 	}
 
 	return &merged

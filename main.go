@@ -62,7 +62,7 @@ func main() {
 
 	// Config flags
 	rl.SetConfigFlags(rl.FlagWindowResizable)
-	if *settings.System.HighDpi {
+	if *settings.HighDpi {
 		rl.SetConfigFlags(rl.FlagWindowHighdpi)
 	}
 
@@ -73,27 +73,28 @@ func main() {
 	defer rl.CloseWindow()
 
 	userStyle := st.WindowStyle{
-		PaddingTop:    float32(*settings.UI.Padding.Top),
-		PaddingRight:  float32(*settings.UI.Padding.Right),
-		PaddingBottom: float32(*settings.UI.Padding.Bottom),
-		PaddingLeft:   float32(*settings.UI.Padding.Left),
-		Font:          rl.LoadFontEx(*settings.UI.FontFamily, 100, nil),
-		FontSize:      float32(*settings.UI.FontSize),
-		FontSpacing:   float32(*settings.UI.FontSpacing),
+		PaddingTop:    float32(*settings.Padding.Top),
+		PaddingRight:  float32(*settings.Padding.Right),
+		PaddingBottom: float32(*settings.Padding.Bottom),
+		PaddingLeft:   float32(*settings.Padding.Left),
+		Font:          rl.LoadFontEx(*settings.FontFamily, 100, nil),
+		FontSize:      float32(*settings.FontSize),
+		FontSpacing:   float32(*settings.FontSpacing),
 		Cursor: st.Cursor{
 			Width:             1,
-			Ratio:             float32(*settings.UI.CursorRatio),
-			HorizontalPadding: int32(*settings.UI.ScrollPadding),
-			VerticalPadding:   int32(*settings.UI.ScrollPadding),
+			Ratio:             float32(*settings.CursorRatio),
+			HorizontalPadding: int32(*settings.ScrollPadding),
+			VerticalPadding:   int32(*settings.ScrollPadding),
 		},
 		LineNumbers: st.LineNumbers{
-			PaddingLeft:  *settings.UI.LineNumbers.PaddingLeft,
-			PaddingRight: *settings.UI.LineNumbers.PaddingRight,
-			LineWidth:    *settings.UI.LineNumbers.LineWidth,
+			PaddingLeft:   *settings.LineNumbers.PaddingLeft,
+			PaddingRight:  *settings.LineNumbers.PaddingRight,
+			LineWidth:     *settings.LineNumbers.LineWidth,
+			OffsetCurrent: *settings.LineNumbers.OffsetCurrent,
 		},
 	}
 
-	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(settings.UI.Theme)
+	userStyle.ColorTheme, err = st.GetColorThemeFromFileName(settings.Theme)
 	if err != nil {
 		fmt.Println("Error could not open color theme")
 		return
@@ -134,13 +135,17 @@ func main() {
 
 	copy(state.SavedFile, userText)
 
-	// Get line numebr
-	largestLineNb := fmt.Sprintf("%d", len(userText)-1)
+	// Get line number
+	lastLineNb := len(userText) - 1
+	if userStyle.LineNumbers.OffsetCurrent && len(userText)-1 < 100 {
+		lastLineNb *= 10
+	}
+	largestLineNb := fmt.Sprintf("%d", lastLineNb)
 	largestNbSize := rl.MeasureTextEx(userStyle.Font, largestLineNb, userStyle.FontSize, userStyle.FontSpacing)
 	state.Cache.LineNumbers.Width = int32(largestNbSize.X)
 
 	userStyle.PaddingLeft += float32(state.Cache.LineNumbers.Width) +
-		float32(*settings.UI.LineNumbers.PaddingLeft) + float32(*settings.UI.LineNumbers.PaddingRight)
+		float32(*settings.LineNumbers.PaddingLeft) + float32(*settings.LineNumbers.PaddingRight)
 
 	for !rl.WindowShouldClose() {
 
@@ -172,7 +177,7 @@ func main() {
 			state.ViewPortSteps.Y = int(state.ViewPortSize.Y / (userStyle.CharSize.Y + userStyle.FontSpacing))
 		}
 
-		if *settings.UI.LineHighlight {
+		if *settings.LineHighlight {
 			rl.DrawRectangle(0, int32(state.Cache.Cursor.Y), int32(state.ViewPortSize.X),
 				int32(userStyle.CharSize.Y), userStyle.ColorTheme.Editor.Highlight)
 		}
@@ -197,10 +202,10 @@ func main() {
 		)
 
 		if state.Update.Cursor {
-			r.CalculateLineNbPositions(*settings.UI.LineNumbers.Relative, &state, &userStyle)
+			r.CalculateLineNbPositions(*settings.LineNumbers.Relative, &state, &userStyle)
 		}
 
-		if *settings.UI.LineNumbers.Show {
+		if *settings.LineNumbers.Show {
 			r.RenderLineNumbers(&state, &userStyle)
 		}
 

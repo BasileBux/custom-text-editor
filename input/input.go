@@ -94,6 +94,14 @@ func InputManager(text *[]string, state *t.ProgramState, style *st.WindowStyle) 
 		// Scroll down and reset horizontal scroll
 		r.ScrollDown(1, state, style)
 		nav.ScrollOffset.X = 0
+
+		// Check and change width of line numbers gutter if max nb changes
+		newFileNb := fmt.Sprintf("%d", len(*text)-1)
+		if len(newFileNb) > int(state.Cache.LineNumbers.Width) {
+			newNbSize := rl.MeasureTextEx(style.Font, newFileNb, style.FontSize, style.FontSpacing)
+			style.PaddingLeft -= float32(state.Cache.LineNumbers.Width)
+			style.PaddingLeft += newNbSize.X
+		}
 	}
 
 	// Tab
