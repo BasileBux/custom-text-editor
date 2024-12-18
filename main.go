@@ -156,7 +156,7 @@ func main() {
 	var performances r.Performances
 	if *settings.PerformanceDisplay {
 		ctx, cancel = context.WithCancel(context.Background())
-		go performances.CalculatePerformanceDisplay(ctx)
+		go r.GetPerformances(ctx, &performances)
 	}
 
 	for !rl.WindowShouldClose() {
@@ -230,7 +230,7 @@ func main() {
 		}
 
 		if *settings.PerformanceDisplay {
-			performances.RenderPerformanceDisplay(userStyle, state)
+			r.RenderPerformanceDisplay(performances, userStyle, state)
 		}
 
 		state.Update.Reset()
