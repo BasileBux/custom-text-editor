@@ -20,5 +20,6 @@
 		"offset_current": true
 	},
 	"line_highlight": true,
-	"high_dpi": true
+	"high_dpi": true,
+	"performance_display": false
 }

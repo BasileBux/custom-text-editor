@@ -61,8 +61,9 @@ type Settings struct {
 		OffsetCurrent *bool `json:"offset_current,omitempty"`
 	} `json:"line_numbers,omitempty"`
 
-	LineHighlight *bool `json:"line_highlight,omitempty"`
-	HighDpi       *bool `json:"high_dpi,omitempty"`
+	LineHighlight      *bool `json:"line_highlight,omitempty"`
+	HighDpi            *bool `json:"high_dpi,omitempty"`
+	PerformanceDisplay *bool `json:"performance_display,omitempty"`
 }
 
 //go:embed default.json
@@ -192,6 +193,10 @@ func MergeSettings(defaults *Settings, user *Settings) *Settings {
 	// Merge system settings
 	if user.HighDpi != nil {
 		merged.HighDpi = user.HighDpi
+	}
+
+	if user.PerformanceDisplay != nil {
+		merged.PerformanceDisplay = user.PerformanceDisplay
 	}
 
 	return &merged

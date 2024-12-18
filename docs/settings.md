@@ -171,3 +171,12 @@ Positive `integer` values. Set to 0 to remove line
 
 `boolean` values. True is activated. 
 
+## Performance display
+
+- Description: Enable performance display
+- Setting: `performance_display`
+- Default: false
+
+#### Options
+
+`boolean`

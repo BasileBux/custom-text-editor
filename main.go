@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -149,6 +150,15 @@ func main() {
 			float32(*settings.LineNumbers.PaddingLeft) + float32(*settings.LineNumbers.PaddingRight)
 	}
 
+	// Run performance display
+	var cancel context.CancelFunc
+	var ctx context.Context
+	var performances r.Performances
+	if *settings.PerformanceDisplay {
+		ctx, cancel = context.WithCancel(context.Background())
+		go performances.CalculatePerformanceDisplay(ctx)
+	}
+
 	for !rl.WindowShouldClose() {
 
 		if !rl.IsWindowFocused() {
@@ -159,6 +169,7 @@ func main() {
 
 		terminate := input.InputManager(&userText, &state, &userStyle)
 		if terminate {
+			cancel()
 			break
 		}
 		if rl.IsKeyDown(rl.KeyLeftControl) && rl.IsKeyPressed(rl.KeyQ) {
@@ -216,6 +227,10 @@ func main() {
 
 		if *settings.LineNumbers.Show {
 			r.RenderLineNumbers(&state, &userStyle)
+		}
+
+		if *settings.PerformanceDisplay {
+			performances.RenderPerformanceDisplay(userStyle, state)
 		}
 
 		state.Update.Reset()

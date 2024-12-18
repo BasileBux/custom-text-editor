@@ -16,6 +16,9 @@ tmux send-keys -t "$session_name":2 "nvim ." C-m
 
 tmux new-window -t "$session_name":3 -n "term2" -c "$current_dir"
 
+tmux new-window -t "$session_name":4 -n "config" -c "~/.config/kenzan/"
+tmux send-keys -t "$session_name":4 "nvim ." C-m
+
 tmux select-window -t "$session_name":1
 
 tmux attach-session -t "$session_name"
